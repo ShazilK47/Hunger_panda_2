@@ -154,9 +154,7 @@ export default function OrdersPage() {
                           <li key={item.id} className="py-4">
                             <div className="flex items-center justify-between">
                               <div>
-                                <p className="font-medium">
-                                  {item.menuItem.name}
-                                </p>
+                                <p className="font-medium">{item.name}</p>
                                 <p className="text-sm text-gray-600">
                                   {item.quantity} x {formatCurrency(item.price)}
                                 </p>
@@ -175,7 +173,12 @@ export default function OrdersPage() {
                     <div>
                       <p className="text-sm text-gray-600">Total Amount</p>
                       <p className="text-lg font-medium">
-                        {formatCurrency(order.totalAmount)}
+                        {formatCurrency(
+                          order.items.reduce(
+                            (total, item) => total + item.price * item.quantity,
+                            0
+                          )
+                        )}
                       </p>
                     </div>
                     <Link href={`/orders/${order.id}`}>

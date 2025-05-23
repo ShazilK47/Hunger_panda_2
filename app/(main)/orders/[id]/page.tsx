@@ -75,7 +75,6 @@ export default function OrderDetailsPage({ params }: OrderDetailsPageProps) {
   }
 
   if (!order) return notFound();
-
   const getStatusColor = (status: Order["status"]) => {
     switch (status) {
       case "PENDING":
@@ -158,7 +157,7 @@ export default function OrderDetailsPage({ params }: OrderDetailsPageProps) {
                   >
                     <div className="flex items-center">
                       <div>
-                        <p className="font-medium">{item.menuItem.name}</p>
+                        <p className="font-medium">{item.name}</p>
                         <p className="text-sm text-gray-600">
                           {item.quantity} x {formatCurrency(item.price)}
                         </p>
@@ -176,7 +175,12 @@ export default function OrderDetailsPage({ params }: OrderDetailsPageProps) {
               <div className="flex justify-between mb-2">
                 <p className="text-gray-600">Subtotal</p>
                 <p className="font-medium">
-                  {formatCurrency(order.totalAmount)}
+                  {formatCurrency(
+                    order.items.reduce(
+                      (sum, item) => sum + item.price * item.quantity,
+                      0
+                    )
+                  )}
                 </p>
               </div>
               <div className="flex justify-between mb-2">
@@ -185,7 +189,14 @@ export default function OrderDetailsPage({ params }: OrderDetailsPageProps) {
               </div>
               <div className="flex justify-between font-semibold text-lg">
                 <p>Total</p>
-                <p>{formatCurrency(order.totalAmount)}</p>
+                <p>
+                  {formatCurrency(
+                    order.items.reduce(
+                      (sum, item) => sum + item.price * item.quantity,
+                      0
+                    )
+                  )}
+                </p>
               </div>
             </div>
 

@@ -180,7 +180,7 @@ export default function OrderSuccessPage() {
                   className="flex justify-between items-center"
                 >
                   <div>
-                    <p className="font-medium">{item.menuItem.name}</p>
+                    <p className="font-medium">{item.name}</p>
                     <p className="text-sm text-gray-600">
                       {item.quantity} x {formatCurrency(item.price)}
                     </p>
@@ -195,7 +195,12 @@ export default function OrderSuccessPage() {
                 <div className="flex justify-between mb-2">
                   <p className="text-gray-600">Subtotal</p>
                   <p className="font-medium">
-                    {formatCurrency(order.totalAmount)}
+                    {formatCurrency(
+                      order.items.reduce(
+                        (total, item) => total + item.price * item.quantity,
+                        0
+                      )
+                    )}
                   </p>
                 </div>
                 <div className="flex justify-between mb-2">
@@ -204,7 +209,14 @@ export default function OrderSuccessPage() {
                 </div>
                 <div className="flex justify-between text-lg font-semibold">
                   <p>Total</p>
-                  <p>{formatCurrency(order.totalAmount)}</p>
+                  <p>
+                    {formatCurrency(
+                      order.items.reduce(
+                        (total, item) => total + item.price * item.quantity,
+                        0
+                      )
+                    )}
+                  </p>
                 </div>
               </div>
 

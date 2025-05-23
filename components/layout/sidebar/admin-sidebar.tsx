@@ -5,17 +5,17 @@ import Link from "next/link";
 
 const links = [
   {
-    href: "/dashboard/admin/restaurants",
+    href: "/admin/restaurants",
     label: "Restaurants",
     icon: "🏪",
   },
   {
-    href: "/dashboard/admin/menu-items",
+    href: "/admin/menu-items",
     label: "Menu Items",
     icon: "🍽️",
   },
   {
-    href: "/dashboard/admin/orders",
+    href: "/admin/orders",
     label: "Orders",
     icon: "📦",
   },

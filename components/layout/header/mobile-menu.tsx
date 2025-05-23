@@ -24,14 +24,14 @@ export default function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
   // User links only shown when authenticated
   const userLinks = session
     ? [
-        { href: "/dashboard/profile", label: "My Profile", icon: "👤" },
+        { href: "/profile", label: "My Profile", icon: "👤" },
         { href: "/orders", label: "My Orders", icon: "📦" },
       ]
     : [];
 
   // Admin links only shown when user is admin
   const adminLinks = session?.user?.isAdmin
-    ? [{ href: "/dashboard/admin", label: "Admin Dashboard", icon: "⚙️" }]
+    ? [{ href: "/admin", label: "Admin Dashboard", icon: "⚙️" }]
     : [];
 
   if (!isOpen) return null;

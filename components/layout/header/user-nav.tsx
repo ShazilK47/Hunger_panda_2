@@ -71,7 +71,7 @@ export default function UserNav() {
           <div className="py-1" role="menu" aria-orientation="vertical">
             {session?.user?.isAdmin && (
               <Link
-                href="/dashboard/admin"
+                href="/admin"
                 className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
                 onClick={() => setIsOpen(false)}
               >
@@ -79,7 +79,7 @@ export default function UserNav() {
               </Link>
             )}
             <Link
-              href="/dashboard/profile"
+              href="/profile"
               className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
               onClick={() => setIsOpen(false)}
             >
