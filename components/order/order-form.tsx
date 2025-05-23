@@ -12,7 +12,6 @@ export function OrderForm() {
   const { cart, clearCart } = useCart();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
   // Add address state
   const [address, setAddress] = useState({
     street: "",
@@ -20,10 +19,16 @@ export function OrderForm() {
     state: "",
     zip: "",
   });
+  // Form validation state
+  const [formErrors, setFormErrors] = useState({
+    street: false,
+    city: false,
+    state: false,
+    zip: false,
+  });
 
   // Add payment method state
   const [paymentMethod, setPaymentMethod] = useState("CREDIT_CARD");
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault(); // This is crucial to prevent default form submission
 
@@ -36,6 +41,22 @@ export function OrderForm() {
       setLoading(true);
       setError(null);
 
+      // Validate form
+      const newFormErrors = {
+        street: !address.street,
+        city: !address.city,
+        state: !address.state,
+        zip: !address.zip,
+      };
+
+      setFormErrors(newFormErrors);
+
+      if (Object.values(newFormErrors).some((hasError) => hasError)) {
+        setError("Please fill in all address fields");
+        setLoading(false);
+        return;
+      }
+
       // Create order from cart items
       const order = await createOrder({
         items: cart.items.map((item) => ({
@@ -47,11 +68,20 @@ export function OrderForm() {
         paymentMethod: paymentMethod as any,
       });
 
-      // Clear cart and wait for it to complete
-      await clearCart();
+      console.log("Order created:", order.id);
 
-      // Redirect to success page with order ID
-      router.push(`/checkout/success?orderId=${order.id}`);
+      // Clear cart and WAIT for it to complete
+      try {
+        await clearCart();
+        console.log("Cart cleared successfully");
+
+        // Using the App Router's router.push for navigation
+        router.push(`/checkout/success?orderId=${order.id}`);
+      } catch (clearError) {
+        console.error("Error clearing cart:", clearError);
+        // If cart clearing fails, still try to navigate
+        router.push(`/checkout/success?orderId=${order.id}`);
+      }
     } catch (err) {
       console.error("Error creating order:", err);
       setError(err instanceof Error ? err.message : "Failed to place order");
@@ -70,52 +100,78 @@ export function OrderForm() {
 
       <div className="space-y-4 mb-6">
         <div>
+          {" "}
           <label className="block text-sm font-medium mb-1">
             Street Address
           </label>
           <input
             type="text"
-            className="w-full p-2 border rounded"
+            className={`w-full p-2 border rounded ${
+              formErrors.street ? "border-red-500" : "border-gray-300"
+            }`}
             value={address.street}
             onChange={(e) => setAddress({ ...address, street: e.target.value })}
             required
           />
+          {formErrors.street && (
+            <p className="text-red-500 text-xs mt-1">
+              Street address is required
+            </p>
+          )}
         </div>
 
         <div className="grid grid-cols-2 gap-4">
           <div>
+            {" "}
             <label className="block text-sm font-medium mb-1">City</label>
             <input
               type="text"
-              className="w-full p-2 border rounded"
+              className={`w-full p-2 border rounded ${
+                formErrors.city ? "border-red-500" : "border-gray-300"
+              }`}
               value={address.city}
               onChange={(e) => setAddress({ ...address, city: e.target.value })}
               required
             />
+            {formErrors.city && (
+              <p className="text-red-500 text-xs mt-1">City is required</p>
+            )}
           </div>
           <div>
+            {" "}
             <label className="block text-sm font-medium mb-1">State</label>
             <input
               type="text"
-              className="w-full p-2 border rounded"
+              className={`w-full p-2 border rounded ${
+                formErrors.state ? "border-red-500" : "border-gray-300"
+              }`}
               value={address.state}
               onChange={(e) =>
                 setAddress({ ...address, state: e.target.value })
               }
               required
             />
+            {formErrors.state && (
+              <p className="text-red-500 text-xs mt-1">State is required</p>
+            )}
           </div>
         </div>
 
         <div>
+          {" "}
           <label className="block text-sm font-medium mb-1">ZIP Code</label>
           <input
             type="text"
-            className="w-full p-2 border rounded"
+            className={`w-full p-2 border rounded ${
+              formErrors.zip ? "border-red-500" : "border-gray-300"
+            }`}
             value={address.zip}
             onChange={(e) => setAddress({ ...address, zip: e.target.value })}
             required
           />
+          {formErrors.zip && (
+            <p className="text-red-500 text-xs mt-1">ZIP code is required</p>
+          )}
         </div>
       </div>
 

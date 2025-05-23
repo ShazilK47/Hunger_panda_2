@@ -31,14 +31,23 @@ export default function OrderSuccessPage() {
   const [loading, setLoading] = useState(true);
   const [order, setOrder] = useState<Order | null>(null);
   const [error, setError] = useState<string | null>(null);
-
   useEffect(() => {
     const fetchOrder = async () => {
       try {
         if (!orderId) return;
+
+        // Add a small delay to ensure cart state is fully cleared before fetching
+        await new Promise((resolve) => setTimeout(resolve, 500));
+
+        console.log("Fetching order data for:", orderId);
         const orderData = await getOrderById(orderId);
+
         if (orderData) {
+          console.log("Order data received:", orderData.id);
           setOrder(orderData);
+        } else {
+          // If order not found, set appropriate error
+          setError("Order not found. Please check your order history.");
         }
       } catch (err) {
         console.error("Error fetching order:", err);

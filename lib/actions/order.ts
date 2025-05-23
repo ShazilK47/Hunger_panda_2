@@ -3,8 +3,63 @@
 import { prisma } from "@/lib/db/prisma";
 import { getServerSession } from "next-auth";
 import { revalidatePath } from "next/cache";
-import { CreateOrderInput, Order } from "../types/order";
+import { CreateOrderInput, Order, OrderItem } from "../types/order";
 import { authOptions } from "../auth/options";
+import { Decimal } from "@prisma/client/runtime/library";
+
+// Define a type for Prisma's order result
+type PrismaOrderResult = {
+  id: string;
+  userId: string;
+  status: string;
+  totalAmount: Decimal | number;
+  deliveryAddress: string;
+  paymentMethod: string;
+  createdAt: Date;
+  updatedAt: Date;
+  items: Array<{
+    id: string;
+    menuItemId: string;
+    orderId: string;
+    quantity: number;
+    price: Decimal | number;
+    menuItem: {
+      id: string;
+      name: string;
+      price: Decimal | number;
+      imageUrl?: string;
+      [key: string]: unknown;
+    };
+    [key: string]: unknown;
+  }>;
+};
+
+// Helper function to convert Decimal to number
+const convertDecimalToNumber = (value: Decimal | number | string): number => {
+  if (typeof value === "object" && value !== null) {
+    return parseFloat(value.toString());
+  }
+  return typeof value === "string" ? parseFloat(value) : Number(value);
+};
+
+// Helper to convert Prisma types to our proper Order type
+const convertPrismaOrderToOrderType = (order: PrismaOrderResult): Order => {
+  return {
+    ...order,
+    status: order.status as Order["status"], // Cast status to Order["status"]
+    totalAmount: convertDecimalToNumber(order.totalAmount),
+    items: order.items.map(
+      (item): OrderItem => ({
+        ...item,
+        price: convertDecimalToNumber(item.price),
+        menuItem: {
+          ...item.menuItem,
+          price: convertDecimalToNumber(item.menuItem.price),
+        },
+      })
+    ),
+  };
+};
 
 export async function createOrder(input: CreateOrderInput): Promise<Order> {
   const session = await getServerSession(authOptions);
@@ -50,11 +105,11 @@ export async function createOrder(input: CreateOrderInput): Promise<Order> {
         },
       },
     });
-
     revalidatePath("/orders");
     revalidatePath(`/orders/${order.id}`);
 
-    return order;
+    // Convert Decimal values to JavaScript numbers
+    return convertPrismaOrderToOrderType(order as PrismaOrderResult);
   } catch (error) {
     console.error("Error creating order:", error);
     throw new Error("Failed to create order");
@@ -91,7 +146,12 @@ export async function getOrderById(orderId: string): Promise<Order | null> {
       },
     });
 
-    return order;
+    // Convert Decimal values to numbers before returning to client components
+    if (order) {
+      return convertPrismaOrderToOrderType(order as PrismaOrderResult);
+    }
+
+    return null;
   } catch (error) {
     console.error("Error fetching order:", error);
     throw new Error("Failed to fetch order");
@@ -130,7 +190,10 @@ export async function getUserOrders(): Promise<Order[]> {
       },
     });
 
-    return orders;
+    // Convert Decimal values to numbers before returning to client components
+    return orders.map((order: PrismaOrderResult) =>
+      convertPrismaOrderToOrderType(order)
+    );
   } catch (error) {
     console.error("Error fetching orders:", error);
     throw new Error("Failed to fetch orders");
@@ -172,11 +235,11 @@ export async function updateOrderStatus(
         },
       },
     });
-
     revalidatePath("/orders");
     revalidatePath(`/orders/${orderId}`);
 
-    return order;
+    // Convert Decimal values to numbers before returning to client components
+    return convertPrismaOrderToOrderType(order as PrismaOrderResult);
   } catch (error) {
     console.error("Error updating order:", error);
     throw new Error("Failed to update order");

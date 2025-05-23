@@ -11,10 +11,10 @@ import { CartProvider } from "@/components/cart/cart-context";
 export default function Home() {
   return (
     <CartProvider>
+      <PromotionBanner />
       <div className="flex flex-col min-h-screen">
         <Header />
         <main className="flex-grow">
-          <PromotionBanner />
           <HeroSection />
           <MenuShowcase />
           <HowItWorks />

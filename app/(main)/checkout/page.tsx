@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { useCart } from "@/components/cart/cart-context";
 import { CartSummary } from "@/components/cart/cart-summary";
 import { OrderForm } from "@/components/order/order-form";
@@ -9,13 +10,16 @@ import { Button } from "@/components/ui/button";
 
 export default function CheckoutPage() {
   const { cart } = useCart();
+  const router = useRouter();
   const isCartEmpty = cart.totalItems === 0;
-
   useEffect(() => {
+    // Check cart status and redirect if empty
     if (isCartEmpty) {
-      window.location.href = "/cart";
+      console.log("Cart is empty, redirecting to cart page");
+      // Use router.push instead of window.location for client-side navigation
+      router.push("/cart");
     }
-  }, [isCartEmpty]);
+  }, [isCartEmpty, router]);
 
   if (isCartEmpty) {
     return null;

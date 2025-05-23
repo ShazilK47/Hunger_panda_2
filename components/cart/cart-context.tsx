@@ -166,13 +166,21 @@ export function CartProvider({ children }: CartProviderProps) {
         totalAmount,
       };
     });
-  };
-  // Clear cart completely
-  const clearCart = () => {
-    setCart(initialCart);
-    // Update localStorage immediately
-    localStorage.removeItem("hungryPandaCart");
-    return Promise.resolve(); // Make it work with await
+  }; // Clear cart completely
+  const clearCart = async () => {
+    return new Promise<void>((resolve) => {
+      // First clear localStorage to ensure it happens immediately
+      localStorage.removeItem("hungryPandaCart");
+
+      // Then update state and wait for it to complete
+      setCart(initialCart);
+
+      // Add a small delay to ensure state updates are processed
+      setTimeout(() => {
+        console.log("Cart state cleared");
+        resolve();
+      }, 300); // Increased timeout for more reliability
+    });
   };
 
   // Check if menu item is in cart
