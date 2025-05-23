@@ -1,6 +1,7 @@
 import Link from "next/link";
 import UserNav from "./user-nav";
 import MainNav from "./main-nav";
+import { CartButton } from "@/components/cart/cart-button";
 
 export default function Header() {
   return (
@@ -13,7 +14,10 @@ export default function Header() {
             </Link>
             <MainNav />
           </div>
-          <UserNav />
+          <div className="flex items-center space-x-4">
+            <CartButton />
+            <UserNav />
+          </div>
         </div>
       </div>
     </header>

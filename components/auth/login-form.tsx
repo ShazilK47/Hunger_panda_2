@@ -14,12 +14,10 @@ export default function LoginForm() {
   });
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
@@ -42,7 +40,7 @@ export default function LoginForm() {
       router.push("/");
       router.refresh();
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    } catch (error) {
+    } catch (err) {
       setError("An unexpected error occurred. Please try again.");
       setIsLoading(false);
     }

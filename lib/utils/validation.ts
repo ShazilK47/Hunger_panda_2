@@ -30,3 +30,38 @@ export const profileSchema = z.object({
     .min(5, "Address must be at least 5 characters")
     .optional(),
 });
+
+// Restaurant validation schema
+export const restaurantSchema = z.object({
+  name: z.string().min(2, "Restaurant name must be at least 2 characters"),
+  description: z.string().optional(),
+  address: z.string().min(5, "Address must be at least 5 characters"),
+  imageUrl: z
+    .string()
+    .url("Please enter a valid image URL")
+    .optional()
+    .or(z.literal("")),
+});
+
+// Menu item validation schema
+export const menuItemSchema = z.object({
+  name: z.string().min(2, "Item name must be at least 2 characters"),
+  description: z.string().optional(),
+  price: z.coerce.number().min(0.01, "Price must be greater than 0"),
+  category: z.string().min(1, "Category is required"),
+  imageUrl: z
+    .string()
+    .url("Please enter a valid image URL")
+    .optional()
+    .or(z.literal("")),
+  restaurantId: z.string().uuid("Invalid restaurant ID"),
+});
+
+// Checkout validation schema
+export const checkoutSchema = z.object({
+  deliveryAddress: z
+    .string()
+    .min(5, "Delivery address must be at least 5 characters"),
+  paymentMethod: z.enum(["CASH", "CREDIT_CARD"]),
+  notes: z.string().optional(),
+});

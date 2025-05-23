@@ -9,6 +9,9 @@ export function formatPrice(price: number | string): string {
   }).format(numericPrice);
 }
 
+// Alias for formatPrice to maintain consistency with menu item component
+export const formatCurrency = formatPrice;
+
 // Format date to readable string
 export function formatDate(date: Date | string): string {
   const dateObject = typeof date === "string" ? new Date(date) : date;

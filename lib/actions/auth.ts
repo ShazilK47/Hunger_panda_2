@@ -3,7 +3,6 @@
 import { prisma } from "@/lib/db/prisma";
 import { LoginData, RegisterData } from "@/lib/types/auth";
 import bcrypt from "bcrypt";
-import { signIn, signOut } from "next-auth/react";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 
@@ -36,13 +35,19 @@ export async function login(data: LoginData) {
   }
 
   try {
-    const result = await signIn("credentials", {
-      email: data.email,
-      password: data.password,
-      redirect: false,
+    // Find the user
+    const user = await prisma.user.findUnique({
+      where: { email: data.email },
     });
 
-    if (result?.error) {
+    if (!user) {
+      return { error: "Invalid email or password" };
+    }
+
+    // Verify password
+    const passwordMatch = await bcrypt.compare(data.password, user.password);
+
+    if (!passwordMatch) {
       return { error: "Invalid email or password" };
     }
 
@@ -92,6 +97,7 @@ export async function register(data: RegisterData) {
 
 // Logout functionality
 export async function logout() {
-  await signOut({ redirect: false });
+  // We can't use signOut directly in a server action,
+  // so we just redirect to the home page
   redirect("/");
 }

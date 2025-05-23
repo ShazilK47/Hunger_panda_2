@@ -1,5 +1,6 @@
 import Header from "@/components/layout/header";
 import Footer from "@/components/layout/footer";
+import { CartProvider } from "@/components/cart/cart-context";
 
 export default function MainLayout({
   children,
@@ -8,9 +9,11 @@ export default function MainLayout({
 }) {
   return (
     <div className="flex flex-col min-h-screen">
-      <Header />
-      <main className="flex-grow">{children}</main>
-      <Footer />
+      <CartProvider>
+        <Header />
+        <main className="flex-grow">{children}</main>
+        <Footer />
+      </CartProvider>
     </div>
   );
 }
