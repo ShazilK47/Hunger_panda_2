@@ -97,7 +97,7 @@ export default function MenuItemModal({
                       sizes="(max-width: 768px) 100vw, 400px"
                     />
                   </div>
-                  <div className="absolute top-2 right-2 bg-primary text-white px-3 py-1 rounded-full text-sm font-medium">
+                  <div className="absolute top-2 right-2 bg-primary text-black px-3 py-1 rounded-full text-sm font-medium">
                     {item.category}
                   </div>
                 </div>
@@ -133,7 +133,7 @@ export default function MenuItemModal({
                 <div className="mt-6">
                   <button
                     type="button"
-                    className="w-full flex items-center justify-center px-4 py-3 bg-primary text-white rounded-full hover:bg-primary/90 transition-colors disabled:bg-gray-400"
+                    className="w-full flex items-center justify-center px-4 py-3 bg-primary text-black rounded-full hover:bg-primary/90 transition-colors disabled:bg-gray-400"
                     onClick={handleAddToCart}
                     disabled={inCart}
                   >

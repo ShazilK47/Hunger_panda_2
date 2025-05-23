@@ -22,17 +22,25 @@ class MenuItemError extends Error {
  * Helper function to convert Prisma MenuItem to our MenuItem type
  * This handles the price conversion from Decimal to number
  */
-const convertPrismaMenuItemToMenuItem = (item: PrismaMenuItem): MenuItem => ({
-  id: item.id,
-  name: item.name,
-  description: item.description || "",
-  price: parseFloat(item.price.toString()),
-  category: item.category,
-  imageUrl: item.imageUrl || "",
-  restaurantId: item.restaurantId,
-  createdAt: item.createdAt,
-  updatedAt: item.updatedAt,
-});
+const convertPrismaMenuItemToMenuItem = (item: PrismaMenuItem): MenuItem => {
+  // Make sure the price is properly converted from Decimal to a JavaScript number
+  return {
+    id: item.id,
+    name: item.name,
+    description: item.description || "",
+    price:
+      typeof item.price === "object"
+        ? parseFloat(item.price.toString())
+        : typeof item.price === "string"
+        ? parseFloat(item.price)
+        : Number(item.price),
+    category: item.category,
+    imageUrl: item.imageUrl || "",
+    restaurantId: item.restaurantId,
+    createdAt: item.createdAt,
+    updatedAt: item.updatedAt,
+  };
+};
 
 /**
  * Helper to check if an error is a Prisma error with specific code

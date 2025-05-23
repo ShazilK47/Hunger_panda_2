@@ -75,7 +75,7 @@ export default function Newsletter() {
             </div>{" "}
             <button
               type="submit"
-              className="px-6 py-3 bg-primary text-white rounded-pill font-medium hover:bg-primary/90 transition-colors disabled:opacity-70 shadow-sm hover:shadow-md"
+              className="px-6 py-3 bg-primary text-black rounded-pill font-medium hover:bg-primary/90 transition-colors disabled:opacity-70 shadow-sm hover:shadow-md"
               disabled={status === "loading" || status === "success"}
             >
               {status === "loading" ? "Subscribing..." : "Subscribe"}

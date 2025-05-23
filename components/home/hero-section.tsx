@@ -39,33 +39,45 @@ export default function HeroSection() {
               <br />
               It&apos;s an <span className="text-primary">Experience</span>.
             </h1>
-            <p className="text-lg md:text-xl text-textSecondary mb-8 max-w-lg slide-in-left" style={{ animationDelay: "0.1s" }}>
+            <p
+              className="text-lg md:text-xl text-textSecondary mb-8 max-w-lg slide-in-left"
+              style={{ animationDelay: "0.1s" }}
+            >
               Order from your favorite restaurants and have delicious meals
               delivered right to your doorstep.
             </p>
-            
+
             {/* Search Component */}
-            <div className="mb-8 slide-in-left" style={{ animationDelay: "0.2s" }}>
+            <div
+              className="mb-8 slide-in-left"
+              style={{ animationDelay: "0.2s" }}
+            >
               <SearchBar />
             </div>
-            
-            <div className="flex flex-col sm:flex-row gap-4 mb-8 slide-in-left" style={{ animationDelay: "0.3s" }}>
+
+            <div
+              className="flex flex-col sm:flex-row gap-4 mb-8 slide-in-left"
+              style={{ animationDelay: "0.3s" }}
+            >
               <Link
                 href="/restaurants"
-                className="inline-flex items-center justify-center whitespace-nowrap rounded-pill text-base font-medium transition-all bg-primary text-white hover:bg-primary/90 hover:shadow-md h-12 px-8 py-2 pulse-subtle"
+                className="inline-flex items-center justify-center whitespace-nowrap rounded-pill text-base font-semibold transition-all bg-primary text-black hover:bg-primary/90 hover:shadow-md h-12 px-8 py-2 pulse-subtle"
               >
                 View Menu
               </Link>
               <Link
                 href="/restaurants"
-                className="inline-flex items-center justify-center whitespace-nowrap rounded-pill text-base font-medium transition-all border-2 border-primary text-primary bg-transparent hover:bg-primary/5 h-12 px-8 py-2"
+                className="inline-flex items-center justify-center whitespace-nowrap rounded-pill text-base font-semibold transition-all border-2 border-primary text-primary bg-white hover:bg-primary/5 h-12 px-8 py-2"
               >
                 Learn More
               </Link>
             </div>
 
             {/* Customer Reviews */}
-            <div className="bg-white rounded-lg p-4 shadow-card max-w-md slide-in-left" style={{ animationDelay: "0.4s" }}>
+            <div
+              className="bg-white rounded-lg p-4 shadow-card max-w-md slide-in-left"
+              style={{ animationDelay: "0.4s" }}
+            >
               <div className="flex items-center gap-1 text-orange-500 mb-2">
                 <span>?</span>
                 <span>?</span>
@@ -84,7 +96,10 @@ export default function HeroSection() {
                 </div>
               ) : (
                 <p className="text-sm text-gray-600 italic">
-                  &ldquo;{review?.content || "The food delivery was prompt and the food was still hot when it arrived. Excellent service!"}&rdquo;
+                  &ldquo;
+                  {review?.content ||
+                    "The food delivery was prompt and the food was still hot when it arrived. Excellent service!"}
+                  &rdquo;
                 </p>
               )}
               <div className="flex items-center mt-3">
@@ -94,7 +109,9 @@ export default function HeroSection() {
                   <div className="w-8 h-8 rounded-full bg-gray-400 border-2 border-white"></div>
                 </div>
                 <span className="ml-3 text-xs text-gray-500">
-                  {review?.customerName ? `${review.customerName} and others` : "and 1.2k+ satisfied customers"}
+                  {review?.customerName
+                    ? `${review.customerName} and others`
+                    : "and 1.2k+ satisfied customers"}
                 </span>
               </div>
             </div>

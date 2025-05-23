@@ -92,10 +92,10 @@ export function MenuItemCard({
               >
                 +
               </button>
-            </div>
+            </div>{" "}
             <Button
               onClick={handleAddToCart}
-              className="flex-1 rounded-pill"
+              className="flex-1 rounded-pill font-semibold"
               disabled={inCart}
             >
               {inCart ? "In Cart" : "Add to Cart"}

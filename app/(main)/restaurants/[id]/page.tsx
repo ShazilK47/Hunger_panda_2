@@ -10,16 +10,17 @@ import { MenuList } from "@/components/menu/menu-list";
 import { useCart } from "@/components/cart/cart-context";
 import { MenuItem } from "@/lib/types/menu";
 import { Restaurant } from "@/lib/types/restaurant";
-import { useEffect, useState } from "react";
+import { useEffect, useState, use } from "react";
 
 interface RestaurantPageProps {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 }
 
 export default function RestaurantPage({ params }: RestaurantPageProps) {
   const { cart, addToCart } = useCart();
+  const unwrappedParams = use(params);
   const [restaurant, setRestaurant] = useState<Restaurant | null>(null);
   const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
   const [loading, setLoading] = useState(true);
@@ -30,7 +31,7 @@ export default function RestaurantPage({ params }: RestaurantPageProps) {
       try {
         setLoading(true);
         setError(null);
-        const restaurantData = await getRestaurantById(params.id);
+        const restaurantData = await getRestaurantById(unwrappedParams.id);
 
         if (!restaurantData) {
           return notFound();
@@ -38,7 +39,9 @@ export default function RestaurantPage({ params }: RestaurantPageProps) {
 
         setRestaurant(restaurantData);
 
-        const menuItemsData = await getMenuItemsByRestaurant(params.id);
+        const menuItemsData = await getMenuItemsByRestaurant(
+          unwrappedParams.id
+        );
         setMenuItems(menuItemsData);
       } catch (err) {
         console.error("Error fetching restaurant data:", err);
@@ -49,7 +52,7 @@ export default function RestaurantPage({ params }: RestaurantPageProps) {
     };
 
     fetchData();
-  }, [params.id]);
+  }, [unwrappedParams.id]);
 
   if (loading) {
     return (

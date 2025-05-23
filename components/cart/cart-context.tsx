@@ -24,7 +24,7 @@ const CartContext = createContext<CartContextType>({
   addToCart: () => {},
   removeFromCart: () => {},
   updateQuantity: () => {},
-  clearCart: () => {},
+  clearCart: () => Promise.resolve(),
   isInCart: () => false,
 });
 
@@ -167,10 +167,12 @@ export function CartProvider({ children }: CartProviderProps) {
       };
     });
   };
-
   // Clear cart completely
   const clearCart = () => {
     setCart(initialCart);
+    // Update localStorage immediately
+    localStorage.removeItem("hungryPandaCart");
+    return Promise.resolve(); // Make it work with await
   };
 
   // Check if menu item is in cart

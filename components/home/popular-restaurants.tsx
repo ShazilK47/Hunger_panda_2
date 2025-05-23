@@ -52,7 +52,7 @@ export default function PopularRestaurants() {
             <p className="text-red-500">{error}</p>
             <button
               onClick={() => window.location.reload()}
-              className="mt-4 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90"
+              className="mt-4 px-4 py-2 bg-primary text-black rounded-lg hover:bg-primary/90"
             >
               Try Again
             </button>
@@ -74,9 +74,10 @@ export default function PopularRestaurants() {
         )}
 
         <div className="text-center mt-10">
+          {" "}
           <Link
             href="/restaurants"
-            className="inline-flex items-center justify-center whitespace-nowrap rounded-pill text-sm font-medium transition-all border-2 border-primary text-primary bg-transparent hover:bg-primary/5 h-11 px-6 py-2"
+            className="inline-flex items-center justify-center whitespace-nowrap rounded-pill text-sm font-semibold transition-all border-2 border-primary text-primary bg-white hover:bg-primary/5 h-11 px-6 py-2"
           >
             View All Restaurants
           </Link>

@@ -23,7 +23,7 @@ function CategoryFilter({
       onClick={onClick}
       className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
         isActive
-          ? "bg-primary text-white shadow-md"
+          ? "bg-primary text-black shadow-md"
           : "bg-gray-100 text-gray-700 hover:bg-gray-200"
       }`}
     >
@@ -101,7 +101,7 @@ function MenuShowcaseItem({ item, index, onQuickView }: MenuShowcaseItemProps) {
           onClick={handleAddToCart}
           className={`absolute bottom-4 right-4 w-10 h-10 ${
             inCart ? "bg-gray-400" : "bg-primary hover:bg-primary/90"
-          } text-white rounded-full flex items-center justify-center shadow-sm transition-all ${
+          } text-black rounded-full flex items-center justify-center shadow-sm transition-all ${
             !inCart ? "pulse-subtle" : ""
           }`}
           disabled={inCart}
@@ -367,7 +367,7 @@ export default function MenuShowcase() {
             <p className="text-red-500 mb-4">{error}</p>
             <button
               onClick={handleRetry}
-              className="px-6 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
+              className="px-6 py-2 bg-primary text-black rounded-lg hover:bg-primary/90 transition-colors"
             >
               Try Again
             </button>
@@ -396,7 +396,7 @@ export default function MenuShowcase() {
 
         {!loading && !error && (
           <div className="text-center mt-12">
-            <button className="px-6 py-3 bg-white border-2 border-primary text-primary rounded-full font-medium hover:bg-primary hover:text-white transition-colors">
+            <button className="px-6 py-3 bg-white border-2 border-primary text-primary rounded-full font-semibold hover:bg-primary/90 hover:text-white transition-colors">
               View Full Menu
             </button>
           </div>

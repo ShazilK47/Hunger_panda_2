@@ -18,6 +18,6 @@ export interface CartContextType {
   addToCart: (menuItem: MenuItem, quantity: number) => void;
   removeFromCart: (cartItemId: string) => void;
   updateQuantity: (cartItemId: string, quantity: number) => void;
-  clearCart: () => void;
+  clearCart: () => Promise<void>;
   isInCart: (menuItemId: string) => boolean;
 }

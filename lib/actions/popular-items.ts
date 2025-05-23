@@ -57,12 +57,15 @@ export async function getPopularMenuItems(
       where,
       orderBy,
       take: limit,
-    });
-
-    // Convert Prisma decimal to regular number for price
+    }); // Convert Prisma decimal to regular number for price
     return menuItems.map((item: any) => ({
       ...item,
-      price: parseFloat(item.price.toString()),
+      price:
+        typeof item.price === "object"
+          ? parseFloat(item.price.toString())
+          : typeof item.price === "string"
+          ? parseFloat(item.price)
+          : Number(item.price),
     }));
   } catch (error) {
     console.error("Error fetching popular menu items:", error);
@@ -115,12 +118,15 @@ export async function searchMenuItems(
         ],
       },
       take: limit,
-    });
-
-    // Convert Prisma decimal to regular number for price
+    }); // Convert Prisma decimal to regular number for price
     return menuItems.map((item: any) => ({
       ...item,
-      price: parseFloat(item.price.toString()),
+      price:
+        typeof item.price === "object"
+          ? parseFloat(item.price.toString())
+          : typeof item.price === "string"
+          ? parseFloat(item.price)
+          : Number(item.price),
     }));
   } catch (error) {
     console.error("Error searching menu items:", error);
