@@ -49,7 +49,7 @@ export default function HeroSection() {
 
             {/* Search Component */}
             <div
-              className="mb-8 slide-in-left"
+              className="mb-8 slide-in-left z-90"
               style={{ animationDelay: "0.2s" }}
             >
               <SearchBar />

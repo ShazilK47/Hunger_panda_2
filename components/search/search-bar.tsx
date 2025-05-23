@@ -79,13 +79,13 @@ export default function SearchBar() {
       {/* Backdrop */}
       {results.length > 0 && (
         <div
-          className="fixed inset-0 bg-black/20 z-30"
+          className="fixed inset-0 bg-black/20 z-60"
           onClick={() => setResults([])}
         />
       )}
       {/* Search Results Dropdown */}
       {results.length > 0 && (
-        <div className="absolute mt-2 w-full bg-white rounded-lg shadow-xl border border-gray-100 z-40 max-h-96 overflow-auto">
+        <div className="absolute mt-2 w-full bg-white rounded-lg shadow-xl border border-gray-100 z-100 max-h-96 overflow-auto">
           <div className="p-2">
             {results.map((restaurant) => (
               <div
