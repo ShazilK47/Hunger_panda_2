@@ -1,0 +1,99 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+// 🧑‍💻 Users - Can be normal users or admin (based on isAdmin flag)
+model User {
+  id               String    @id @default(uuid())
+  name             String
+  email            String    @unique
+  password         String
+  isAdmin          Boolean   @default(false)
+  phone            String?
+  address          String?
+  resetToken       String?
+  resetTokenExpiry DateTime?
+  orders           Order[]
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+
+  @@map("users")
+}
+
+// 🏪 Restaurants - Admin can add/edit/delete
+model Restaurant {
+  id          String     @id @default(uuid())
+  name        String
+  description String?
+  imageUrl    String?
+  address     String
+  menuItems   MenuItem[]
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  @@map("restaurants")
+}
+
+// 🍔 Menu Items - Belongs to a Restaurant
+model MenuItem {
+  id           String      @id @default(uuid())
+  name         String
+  description  String?
+  price        Decimal     @db.Decimal(10, 2)
+  imageUrl     String?
+  category     String      // Appetizer, Main Course, Dessert, etc.
+  restaurantId String
+  restaurant   Restaurant  @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+  orderItems   OrderItem[]
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+
+  @@index([restaurantId])
+  @@map("menu_items")
+}
+
+// 🧾 Orders - Placed by Users
+model Order {
+  id              String      @id @default(uuid())
+  userId          String
+  user            User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  items           OrderItem[]
+  status          OrderStatus @default(PENDING)
+  totalAmount     Decimal     @db.Decimal(10, 2)
+  deliveryAddress String
+  paymentMethod   String      // Cash, Credit Card, etc.
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+
+  @@index([userId])
+  @@map("orders")
+}
+
+// 📦 Order Items - What food was in each order
+model OrderItem {
+  id         String   @id @default(uuid())
+  orderId    String
+  order      Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  menuItemId String
+  menuItem   MenuItem @relation(fields: [menuItemId], references: [id], onDelete: Restrict)
+  quantity   Int
+  price      Decimal  @db.Decimal(10, 2)
+
+  @@index([orderId])
+  @@index([menuItemId])
+  @@map("order_items")
+}
+
+// 🔁 Enum - Order status steps
+enum OrderStatus {
+  PENDING
+  CONFIRMED
+  PREPARING
+  DELIVERED
+  CANCELLED
+}
