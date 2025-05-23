@@ -28,14 +28,15 @@ model User {
 // 🏪 Restaurants - Admin can add/edit/delete
 model Restaurant {
   id          String     @id @default(uuid())
-  name        String
-  description String?
-  imageUrl    String?
-  address     String
+  name        String     @db.VarChar(255)
+  description String?    @db.Text
+  imageUrl    String?    @db.Text
+  address     String     @db.Text
   menuItems   MenuItem[]
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
 
+  @@index([name])
   @@map("restaurants")
 }
 

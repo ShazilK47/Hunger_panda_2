@@ -5,15 +5,28 @@ import { Restaurant, RestaurantFormData } from "@/lib/types/restaurant";
 import { revalidatePath } from "next/cache";
 
 /**
- * Get all restaurants
+ * Get all restaurants with optional search term
  */
-export async function getRestaurants(): Promise<Restaurant[]> {
+export async function getRestaurants(
+  searchTerm?: string
+): Promise<Restaurant[]> {
   try {
+    const searchQuery = searchTerm?.toLowerCase() || "";
     const restaurants = await prisma.restaurant.findMany({
+      where: searchQuery
+        ? {
+            OR: [
+              { name: { contains: searchQuery } },
+              { description: { contains: searchQuery } },
+              { address: { contains: searchQuery } },
+            ],
+          }
+        : undefined,
       orderBy: {
         name: "asc",
       },
     });
+
     return restaurants;
   } catch (error) {
     console.error("Error fetching restaurants:", error);

@@ -4,69 +4,29 @@ import { useState } from "react";
 import { Restaurant } from "@/lib/types/restaurant";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import { getRestaurants } from "@/lib/actions/restaurant";
 
 export default function SearchBar() {
   const [searchTerm, setSearchTerm] = useState("");
   const [isSearching, setIsSearching] = useState(false);
   const [results, setResults] = useState<Restaurant[]>([]);
   const router = useRouter();
-
   const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault();
+    const trimmedTerm = searchTerm.trim();
 
-    if (!searchTerm.trim()) return;
+    if (!trimmedTerm) {
+      setResults([]);
+      return;
+    }
 
     setIsSearching(true);
-
     try {
-      // In a real app, you would call an API endpoint
-      // const response = await fetch(`/api/search?term=${encodeURIComponent(searchTerm)}`);
-      // const data = await response.json();
-
-      // For demo purposes, we'll use a simulated delay and mock data
-      await new Promise((resolve) => setTimeout(resolve, 800));
-
-      // Mock search results based on the search term
-      const mockResults: Restaurant[] = [
-        {
-          id: "1",
-          name: "Pizza Palace",
-          description: "Authentic Italian pizzas made with fresh ingredients",
-          imageUrl:
-            "https://images.unsplash.com/photo-1513104890138-7c749659a591",
-          address: "123 Main St",
-          createdAt: new Date(),
-          updatedAt: new Date(),
-        },
-        {
-          id: "2",
-          name: "Burger Bistro",
-          description: "Gourmet burgers with a wide range of toppings",
-          imageUrl:
-            "https://images.unsplash.com/photo-1568901346375-23c9450c58cd",
-          address: "456 Oak Ave",
-          createdAt: new Date(),
-          updatedAt: new Date(),
-        },
-        {
-          id: "3",
-          name: "Sushi Spot",
-          description: "Fresh sushi and Japanese cuisine",
-          imageUrl:
-            "https://images.unsplash.com/photo-1579871494447-9811cf80d66c",
-          address: "789 Pine St",
-          createdAt: new Date(),
-          updatedAt: new Date(),
-        },
-      ].filter(
-        (r) =>
-          r.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          r.description?.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-
-      setResults(mockResults);
+      const data = await getRestaurants(trimmedTerm);
+      setResults(Array.isArray(data) ? data : []);
     } catch (error) {
       console.error("Search error:", error);
+      setResults([]);
     } finally {
       setIsSearching(false);
     }
@@ -115,11 +75,17 @@ export default function SearchBar() {
             </svg>
           )}
         </button>
-      </form>
-
+      </form>{" "}
+      {/* Backdrop */}
+      {results.length > 0 && (
+        <div
+          className="fixed inset-0 bg-black/20 z-30"
+          onClick={() => setResults([])}
+        />
+      )}
       {/* Search Results Dropdown */}
       {results.length > 0 && (
-        <div className="absolute mt-2 w-full bg-white rounded-lg shadow-lg z-10 max-h-96 overflow-auto">
+        <div className="absolute mt-2 w-full bg-white rounded-lg shadow-xl border border-gray-100 z-40 max-h-96 overflow-auto">
           <div className="p-2">
             {results.map((restaurant) => (
               <div
