@@ -37,25 +37,32 @@ interface CartProviderProps {
 
 export function CartProvider({ children }: CartProviderProps) {
   const [cart, setCart] = useState<Cart>(initialCart);
+  const [isInitialized, setIsInitialized] = useState(false);
 
-  // Load cart from localStorage on client-side
+  // Load cart from localStorage on client-side only after component mounts
   useEffect(() => {
+    // This ensures we only run this on the client to prevent hydration mismatch
     const savedCart = localStorage.getItem("hungryPandaCart");
     if (savedCart) {
       try {
         const parsedCart = JSON.parse(savedCart);
         setCart(parsedCart);
+        console.log("Cart loaded from localStorage:", parsedCart);
       } catch (error) {
         console.error("Failed to parse cart from localStorage:", error);
         localStorage.removeItem("hungryPandaCart");
       }
     }
+    setIsInitialized(true);
   }, []);
 
-  // Save cart to localStorage whenever it changes
+  // Save cart to localStorage whenever it changes (but only after initialized)
   useEffect(() => {
-    localStorage.setItem("hungryPandaCart", JSON.stringify(cart));
-  }, [cart]);
+    if (isInitialized) {
+      console.log("Saving cart to localStorage:", cart);
+      localStorage.setItem("hungryPandaCart", JSON.stringify(cart));
+    }
+  }, [cart, isInitialized]);
 
   // Calculate cart totals
   const calculateTotals = (

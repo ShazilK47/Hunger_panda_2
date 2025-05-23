@@ -6,11 +6,10 @@ import PromotionBanner from "@/components/home/promotion-banner";
 import Newsletter from "@/components/home/newsletter";
 import Header from "@/components/layout/header";
 import Footer from "@/components/layout/footer";
-import { CartProvider } from "@/components/cart/cart-context";
 
 export default function Home() {
   return (
-    <CartProvider>
+    <>
       <PromotionBanner />
       <div className="flex flex-col min-h-screen">
         <Header />
@@ -23,6 +22,6 @@ export default function Home() {
         </main>
         <Footer />
       </div>
-    </CartProvider>
+    </>
   );
 }
