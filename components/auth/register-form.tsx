@@ -81,7 +81,6 @@ export default function RegisterForm() {
             placeholder="John Doe"
           />
         </div>
-
         <div>
           <label
             htmlFor="email"
@@ -100,7 +99,6 @@ export default function RegisterForm() {
             placeholder="your@email.com"
           />
         </div>
-
         <div>
           <label
             htmlFor="password"
@@ -123,7 +121,6 @@ export default function RegisterForm() {
             Must be at least 6 characters
           </p>
         </div>
-
         <div>
           <label
             htmlFor="confirmPassword"
@@ -141,12 +138,11 @@ export default function RegisterForm() {
             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
             placeholder="••••••••"
           />
-        </div>
-
+        </div>{" "}
         <button
           type="submit"
           disabled={isLoading}
-          className="w-full bg-primary text-white py-2 px-4 rounded-md hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-colors disabled:opacity-50"
+          className="w-full bg-primary text-white py-2 px-4 rounded-md hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-colors disabled:opacity-50 shadow-sm hover:shadow-md"
         >
           {isLoading ? "Creating Account..." : "Sign Up"}
         </button>

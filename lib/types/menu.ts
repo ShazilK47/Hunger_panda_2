@@ -2,9 +2,9 @@
 export interface MenuItem {
   id: string;
   name: string;
-  description: string | null;
+  description: string; // We convert null to empty string
   price: number;
-  imageUrl: string | null;
+  imageUrl: string; // We convert null to empty string
   category: string;
   restaurantId: string;
   createdAt: Date;

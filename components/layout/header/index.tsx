@@ -5,12 +5,16 @@ import { CartButton } from "@/components/cart/cart-button";
 
 export default function Header() {
   return (
-    <header className="bg-white shadow-sm">
+    <header className="bg-white shadow-sm sticky top-0 z-50">
       <div className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center">
-            <Link href="/" className="text-2xl font-bold text-primary mr-8">
-              🐼 Hungry Panda
+            <Link
+              href="/"
+              className="text-2xl font-bold text-primary flex items-center gap-2 mr-8"
+            >
+              <span className="text-3xl">🐼</span>
+              <span className="font-serif">Hunger Panda</span>
             </Link>
             <MainNav />
           </div>

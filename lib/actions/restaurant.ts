@@ -113,3 +113,25 @@ export async function deleteRestaurant(id: string): Promise<void> {
     throw new Error("Failed to delete restaurant");
   }
 }
+
+/**
+ * Get popular restaurants for homepage
+ */
+export async function getPopularRestaurants(
+  limit: number = 3
+): Promise<Restaurant[]> {
+  try {
+    // In a real application, this would likely be based on order counts, ratings, etc.
+    // For now, we'll simply return the most recently added restaurants
+    const restaurants = await prisma.restaurant.findMany({
+      orderBy: {
+        createdAt: "desc",
+      },
+      take: limit,
+    });
+    return restaurants;
+  } catch (error) {
+    console.error("Error fetching popular restaurants:", error);
+    throw new Error("Failed to fetch popular restaurants");
+  }
+}

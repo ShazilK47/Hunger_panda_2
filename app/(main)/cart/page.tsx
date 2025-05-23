@@ -6,11 +6,6 @@ import { CartItem } from "@/components/cart/cart-item";
 import { CartSummary } from "@/components/cart/cart-summary";
 import { Button } from "@/components/ui/button";
 
-export const metadata = {
-  title: "Shopping Cart | Hungry Panda",
-  description: "View your current order",
-};
-
 export default function CartPage() {
   const { cart } = useCart();
   const { items, totalItems, restaurantId } = cart;

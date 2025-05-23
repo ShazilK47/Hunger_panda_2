@@ -1,5 +1,6 @@
 import { cn } from "@/lib/utils";
 import { ReactNode } from "react";
+import Image from "next/image";
 
 interface CardProps {
   className?: string;
@@ -8,7 +9,12 @@ interface CardProps {
 
 export function Card({ className, children }: CardProps) {
   return (
-    <div className={cn("rounded-lg border bg-white shadow-sm", className)}>
+    <div
+      className={cn(
+        "rounded-xl border bg-white shadow-card transition-all duration-300",
+        className
+      )}
+    >
       {children}
     </div>
   );
@@ -36,7 +42,7 @@ export function CardTitle({ className, children }: CardTitleProps) {
   return (
     <h3
       className={cn(
-        "text-2xl font-semibold leading-none tracking-tight",
+        "text-xl font-semibold leading-none tracking-tight",
         className
       )}
     >
@@ -84,8 +90,22 @@ interface CardImageProps {
 
 export function CardImage({ src, alt, className }: CardImageProps) {
   return (
-    <div className={cn("w-full overflow-hidden rounded-t-lg", className)}>
-      <img src={src} alt={alt} className="h-48 w-full object-cover" />
+    <div
+      className={cn(
+        "w-full h-48 overflow-hidden rounded-t-xl relative",
+        className
+      )}
+    >
+      {/* Using next/image for better optimization */}
+      <div className="relative w-full h-full">
+        <Image
+          src={src}
+          alt={alt}
+          fill
+          className="object-cover transition-transform hover:scale-105 duration-500"
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+        />
+      </div>
     </div>
   );
 }

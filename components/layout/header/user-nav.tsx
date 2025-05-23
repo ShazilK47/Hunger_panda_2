@@ -26,7 +26,7 @@ export default function UserNav() {
         </Link>
         <Link
           href="/register"
-          className="text-sm font-medium px-4 py-2 bg-primary text-white rounded-md hover:bg-primary/90 transition-colors"
+          className="text-sm font-medium px-4 py-2 bg-primary text-white rounded-pill shadow-sm hover:shadow-md hover:bg-primary/90 transition-all"
         >
           Sign up
         </Link>
@@ -45,7 +45,7 @@ export default function UserNav() {
         )}
       </div>
 
-      <div className="flex items-center space-x-2">
+      <div className="flex items-center space-x-3">
         {session?.user?.isAdmin && (
           <Link
             href="/dashboard/admin"

@@ -40,10 +40,11 @@ export function CartItem({ item }: CartItemProps) {
         </div>
 
         <div className="mt-4 flex items-center justify-between">
+          {" "}
           <div className="flex items-center border rounded-md">
             <button
               type="button"
-              className="px-3 py-1 text-gray-600"
+              className="px-3 py-1 text-gray-800 font-bold"
               onClick={() => updateQuantity(id, quantity - 1)}
               aria-label="Decrease quantity"
             >
@@ -52,14 +53,13 @@ export function CartItem({ item }: CartItemProps) {
             <span className="px-3 py-1 font-medium">{quantity}</span>
             <button
               type="button"
-              className="px-3 py-1 text-gray-600"
+              className="px-3 py-1 text-gray-800 font-bold"
               onClick={() => updateQuantity(id, quantity + 1)}
               aria-label="Increase quantity"
             >
               +
             </button>
           </div>
-
           <button
             type="button"
             className="font-medium text-orange-600 hover:text-orange-500"
