@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { deleteMenuItem, getMenuItems } from "@/lib/actions/menu-item";
 import { useEffect } from "react";
 import { formatCurrency } from "@/lib/utils/format";
+import Image from "next/image";
 
 interface AdminMenuListProps {
   onEdit: (item: MenuItem) => void;
@@ -158,12 +159,15 @@ export default function AdminMenuList({ onEdit }: AdminMenuListProps) {
                 <tr key={item.id}>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex items-center">
+                      {" "}
                       {item.imageUrl && (
-                        <div className="flex-shrink-0 h-10 w-10 mr-4">
-                          <img
-                            className="h-10 w-10 rounded-full object-cover"
+                        <div className="flex-shrink-0 h-10 w-10 mr-4 relative">
+                          <Image
+                            className="rounded-full object-cover"
                             src={item.imageUrl}
                             alt={item.name}
+                            fill
+                            sizes="40px"
                           />
                         </div>
                       )}

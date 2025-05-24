@@ -1,7 +1,5 @@
 "use server";
 
-import { prisma } from "@/lib/db/prisma";
-
 export interface CustomerReview {
   id: string;
   customerName: string;

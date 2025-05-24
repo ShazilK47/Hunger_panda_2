@@ -3,6 +3,7 @@
 import { CartItem as CartItemType } from "@/lib/types/cart";
 import { useCart } from "./cart-context";
 import { formatCurrency } from "@/lib/utils/format";
+import Image from "next/image";
 
 interface CartItemProps {
   item: CartItemType;
@@ -15,17 +16,19 @@ export function CartItem({ item }: CartItemProps) {
 
   return (
     <div className="flex items-start gap-4 py-4 border-b">
-      <div className="h-20 w-20 flex-shrink-0 overflow-hidden rounded-md">
-        <img
+      {" "}
+      <div className="h-20 w-20 flex-shrink-0 overflow-hidden rounded-md relative">
+        <Image
           src={
             menuItem.imageUrl ||
             "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1760&q=80"
           }
           alt={menuItem.name}
-          className="h-full w-full object-cover"
+          fill
+          className="object-cover"
+          sizes="80px"
         />
       </div>
-
       <div className="flex flex-1 flex-col">
         <div className="flex justify-between">
           <div>

@@ -53,9 +53,8 @@ export default function MenuItemForm({
         console.error("Error fetching restaurants:", error);
       }
     };
-
     fetchRestaurants();
-  }, []);
+  }, [formData.restaurantId]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

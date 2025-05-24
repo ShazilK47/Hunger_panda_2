@@ -56,7 +56,7 @@ export default function UserNav() {
         onClick={() => setIsOpen(!isOpen)}
       >
         <div className="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center">
-          <span className="text-sm font-medium text-primary">
+          <span className="text-sm font-medium text-white bg-black rounded-b-full p-2">
             {session.user?.name?.[0]?.toUpperCase() || "U"}
           </span>
         </div>

@@ -76,26 +76,30 @@ export function MenuItemCard({
       {onAddToCart && (
         <CardFooter className="pt-4 border-t">
           <div className="w-full flex items-center gap-2">
-            <div className="flex items-center border border-gray-200 rounded-pill overflow-hidden">
-              {" "}
+            {" "}
+            <div className="flex items-center border border-gray-200 rounded-full overflow-hidden shadow-sm">
               <button
-                className="px-3 py-1 text-gray-800 font-bold disabled:opacity-50 hover:bg-gray-100 transition-colors"
+                className="w-8 h-9 flex items-center justify-center text-gray-800 font-bold disabled:opacity-50 hover:bg-gray-100 transition-all"
                 onClick={() => setQuantity((prev) => Math.max(1, prev - 1))}
                 disabled={quantity <= 1}
+                aria-label="Decrease quantity"
               >
-                -
+                <span className="transform translate-y-[-1px]">−</span>
               </button>
-              <span className="px-3 py-1 font-medium">{quantity}</span>
+              <span className="w-8 h-9 flex items-center justify-center font-medium text-gray-900">
+                {quantity}
+              </span>
               <button
-                className="px-3 py-1 text-gray-800 font-bold hover:bg-gray-100 transition-colors"
+                className="w-8 h-9 flex items-center justify-center text-gray-800 font-bold hover:bg-gray-100 transition-all"
                 onClick={() => setQuantity((prev) => prev + 1)}
+                aria-label="Increase quantity"
               >
-                +
+                <span className="transform translate-y-[-1px]">+</span>
               </button>
-            </div>{" "}
+            </div>
             <Button
               onClick={handleAddToCart}
-              className="flex-1 rounded-pill font-semibold"
+              className="flex-1 rounded-pill font-semibold shadow-sm hover:shadow-md"
               disabled={inCart}
             >
               {inCart ? "In Cart" : "Add to Cart"}

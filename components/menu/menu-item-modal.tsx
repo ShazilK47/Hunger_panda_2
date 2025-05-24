@@ -110,21 +110,28 @@ export default function MenuItemModal({
                   <div className="mt-6 flex items-center justify-between">
                     <div className="text-xl font-semibold text-primary">
                       {formatCurrency(item.price)}
-                    </div>
-
-                    <div className="flex items-center border border-gray-300 rounded-full">
+                    </div>{" "}
+                    <div className="flex items-center border border-gray-300 rounded-full overflow-hidden shadow-sm">
                       <button
                         onClick={decrementQuantity}
-                        className="w-8 h-8 flex items-center justify-center text-gray-600 hover:bg-gray-100 rounded-full"
+                        className="w-9 h-9 flex items-center justify-center text-gray-700 hover:bg-gray-100 transition-all"
+                        aria-label="Decrease quantity"
                       >
-                        -
+                        <span className="transform translate-y-[-1px] text-lg font-bold">
+                          −
+                        </span>
                       </button>
-                      <span className="w-8 text-center">{quantity}</span>
+                      <span className="w-9 h-9 flex items-center justify-center font-medium text-gray-900">
+                        {quantity}
+                      </span>
                       <button
                         onClick={incrementQuantity}
-                        className="w-8 h-8 flex items-center justify-center text-gray-600 hover:bg-gray-100 rounded-full"
+                        className="w-9 h-9 flex items-center justify-center text-gray-700 hover:bg-gray-100 transition-all"
+                        aria-label="Increase quantity"
                       >
-                        +
+                        <span className="transform translate-y-[-1px] text-lg font-bold">
+                          +
+                        </span>
                       </button>
                     </div>
                   </div>

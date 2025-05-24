@@ -186,27 +186,29 @@ export default function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
         <div className="p-4 border-t border-gray-100 mt-auto">
           {!session ? (
             <div className="flex flex-col space-y-2">
+              {" "}
               <Link
                 href="/login"
                 onClick={onClose}
-                className="w-full py-2 px-3 text-center rounded-md text-gray-700 bg-gray-100 hover:bg-gray-200 font-medium"
+                className="w-full py-2 px-3 text-center rounded-md text-gray-700 bg-gray-100 hover:bg-gray-200 font-medium transition-colors"
               >
                 Log in
-              </Link>
+              </Link>{" "}
               <Link
                 href="/register"
                 onClick={onClose}
-                className="w-full py-2 px-3 text-center rounded-md bg-primary text-black hover:bg-primary/90 font-medium"
+                className="w-full py-2 px-3 text-center rounded-md bg-primary text-black hover:bg-primary/90 font-medium shadow-sm transition-all"
               >
                 Sign up
               </Link>
             </div>
           ) : (
             <div>
+              {" "}
               <LogoutButton
                 variant="ghost"
                 size="sm"
-                className="w-full flex items-center justify-center gap-2 py-2 text-red-600 hover:text-red-700 hover:bg-red-50 rounded-md"
+                className="w-full flex items-center justify-center gap-2 py-2 text-red-600 hover:text-red-700 hover:bg-red-50 rounded-md transition-colors"
               />
             </div>
           )}

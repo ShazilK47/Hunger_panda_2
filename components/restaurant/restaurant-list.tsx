@@ -99,7 +99,6 @@ export const RestaurantList = forwardRef<
       </div>
     );
   }
-
   return (
     <div className="space-y-6">
       <div className="relative">
@@ -141,7 +140,7 @@ export const RestaurantList = forwardRef<
           </p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
           {filteredRestaurants.map((restaurant) => (
             <RestaurantCard
               key={restaurant.id}

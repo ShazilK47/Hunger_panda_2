@@ -23,6 +23,16 @@ module.exports = {
         },
         secondary: {
           DEFAULT: "#f9f4e8",
+          50: "#fefcf9",
+          100: "#f9f4e8",
+          200: "#f5ebd5",
+          300: "#ead9b4",
+          400: "#e0c690",
+          500: "#d5b36e",
+          600: "#c9a051",
+          700: "#b78d3f",
+          800: "#97742f",
+          900: "#7a5f28",
           foreground: "#2d2d2d", // Text color on secondary background
         },
         accent: {
