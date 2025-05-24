@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { getOrderById } from "@/lib/actions/order";
@@ -25,7 +25,7 @@ const getStatusColor = (status: Order["status"]) => {
   }
 };
 
-export default function OrderSuccessPage() {
+function OrderSuccessContent() {
   const searchParams = useSearchParams();
   const orderId = searchParams.get("orderId");
   const [loading, setLoading] = useState(true);
@@ -239,8 +239,23 @@ export default function OrderSuccessPage() {
               </Button>
             </Link>
           </div>
-        </div>
+        </div>{" "}
       </div>
     </div>
+  );
+}
+
+// Export a wrapper component that uses Suspense
+export default function OrderSuccessPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex justify-center items-center min-h-[60vh]">
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
+        </div>
+      }
+    >
+      <OrderSuccessContent />
+    </Suspense>
   );
 }

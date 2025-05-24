@@ -37,32 +37,63 @@ const VALID_STATUS_TRANSITIONS: Record<OrderStatus, OrderStatus[]> = {
   CANCELLED: [],
 };
 
-export default function AdminOrderList() {
+interface AdminOrderListProps {
+  initialFilter?: string;
+}
+
+export default function AdminOrderList({
+  initialFilter = "all",
+}: AdminOrderListProps) {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
-  const [statusFilter, setStatusFilter] = useState<OrderStatus | "all">("all");
+  const [statusFilter, setStatusFilter] = useState<OrderStatus | "all">(
+    initialFilter as OrderStatus | "all"
+  );
   const [selectedOrderIds, setSelectedOrderIds] = useState<Set<string>>(
     new Set()
   );
   const [updatingOrderIds, setUpdatingOrderIds] = useState<Set<string>>(
     new Set()
   );
-  const [sortField, setSortField] = useState<SortField>(() => {
-    // Restore sort preferences from localStorage
-    const savedField = localStorage.getItem("adminOrdersSortField");
-    return (savedField as SortField) || "createdAt";
-  });
-  const [sortOrder, setSortOrder] = useState<SortOrder>(() => {
-    const savedOrder = localStorage.getItem("adminOrdersSortOrder");
-    return (savedOrder as SortOrder) || "desc";
-  });
+  // Use default values initially
+  const [sortField, setSortField] = useState<SortField>("createdAt");
+  const [sortOrder, setSortOrder] = useState<SortOrder>("desc");
 
-  // Save sort preferences when they change
+  // Load sort preferences from localStorage on client-side only
   useEffect(() => {
-    localStorage.setItem("adminOrdersSortField", sortField);
-    localStorage.setItem("adminOrdersSortOrder", sortOrder);
+    // Check if we're in the browser
+    if (typeof window !== "undefined") {
+      try {
+        const savedField = localStorage.getItem("adminOrdersSortField");
+        if (
+          savedField &&
+          ["id", "createdAt", "status", "total"].includes(savedField)
+        ) {
+          setSortField(savedField as SortField);
+        }
+
+        const savedOrder = localStorage.getItem("adminOrdersSortOrder");
+        if (savedOrder && ["asc", "desc"].includes(savedOrder)) {
+          setSortOrder(savedOrder as SortOrder);
+        }
+      } catch (error) {
+        console.error("Error accessing localStorage:", error);
+      }
+    }
+  }, []);
+
+  // Save sort preferences when they change (client-side only)
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      try {
+        localStorage.setItem("adminOrdersSortField", sortField);
+        localStorage.setItem("adminOrdersSortOrder", sortOrder);
+      } catch (error) {
+        console.error("Error saving to localStorage:", error);
+      }
+    }
   }, [sortField, sortOrder]);
 
   const loadOrders = useCallback(async () => {
