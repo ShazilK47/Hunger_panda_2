@@ -223,15 +223,29 @@ export async function updateMenuItem(
  */
 export async function deleteMenuItem(id: string): Promise<void> {
   try {
+    // First, check if the menu item exists
     const menuItem = await prisma.menuItem.findUnique({
       where: { id },
-      select: { restaurantId: true },
+      include: {
+        orderItems: {
+          take: 1, // We only need to know if there are any, not all of them
+        },
+      },
     });
 
     if (!menuItem) {
       throw new MenuItemError("Menu item not found", "NOT_FOUND");
     }
 
+    // Check if there are any order items referencing this menu item
+    if (menuItem.orderItems && menuItem.orderItems.length > 0) {
+      throw new MenuItemError(
+        "Cannot delete menu item because it is referenced by orders. Consider disabling it instead.",
+        "FOREIGN_KEY_CONSTRAINT"
+      );
+    }
+
+    // Safe to delete since there are no references
     await prisma.menuItem.delete({
       where: { id },
     });
@@ -244,6 +258,13 @@ export async function deleteMenuItem(id: string): Promise<void> {
     }
     if (isPrismaError(error, "P2025")) {
       throw new MenuItemError("Menu item not found", "NOT_FOUND");
+    }
+    if (isPrismaError(error, "P2003")) {
+      // P2003 is the foreign key constraint error code
+      throw new MenuItemError(
+        "Cannot delete menu item because it is referenced by orders.",
+        "FOREIGN_KEY_CONSTRAINT"
+      );
     }
     console.error(`Error deleting menu item ${id}:`, error);
     throw new MenuItemError("Failed to delete menu item", "DELETE_FAILED");

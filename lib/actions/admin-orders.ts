@@ -2,10 +2,24 @@
 
 import { prisma } from "@/lib/db/prisma";
 import { getServerSession } from "next-auth";
-import { Order } from "../types/order";
+import { Order, OrderItem } from "../types/order";
 import { authOptions } from "../auth/options";
 import { isAdmin } from "@/lib/auth/session";
 import type { PrismaOrderResult } from "./order";
+import { OrderStatus } from "../types/order-status";
+import { convertPrismaOrder } from "../utils/prisma";
+
+// Define a type for the converted order item
+type ConvertedOrderItem = {
+  id: string;
+  menuItemId: string;
+  price: number;
+  quantity: number;
+  menuItem: {
+    name: string;
+    price: number;
+  };
+};
 
 export async function getAdminOrders(): Promise<Order[]> {
   const session = await getServerSession(authOptions);
@@ -55,26 +69,29 @@ export async function getAdminOrders(): Promise<Order[]> {
       },
     });
 
-    return orders.map(
-      (order: PrismaOrderResult) =>
-        ({
-          id: order.id,
-          userId: order.userId,
-          status: order.status,
-          total: Number(order.totalAmount),
-          items: order.items.map((item) => ({
-            id: item.id,
-            menuItemId: item.menuItemId,
-            name: item.menuItem.name,
-            quantity: item.quantity,
-            price: Number(item.price),
-          })),
-          deliveryAddress: order.deliveryAddress,
-          paymentMethod: order.paymentMethod,
-          createdAt: order.createdAt,
-          updatedAt: order.updatedAt,
-        } as Order)
-    );
+    return orders.map((order: PrismaOrderResult) => {
+      const converted = convertPrismaOrder(order);
+      return {
+        id: order.id,
+        userId: order.userId,
+        status: order.status as OrderStatus,
+        total: converted.totalAmount,
+        items: converted.items.map(
+          (item: ConvertedOrderItem) =>
+            ({
+              id: item.id,
+              menuItemId: item.menuItemId,
+              name: item.menuItem.name,
+              quantity: item.quantity,
+              price: item.price,
+            } as OrderItem)
+        ),
+        deliveryAddress: order.deliveryAddress,
+        paymentMethod: order.paymentMethod,
+        createdAt: order.createdAt,
+        updatedAt: order.updatedAt,
+      } as Order;
+    });
   } catch (error) {
     console.error("Error fetching admin orders:", error);
     throw new Error("Failed to fetch admin orders");

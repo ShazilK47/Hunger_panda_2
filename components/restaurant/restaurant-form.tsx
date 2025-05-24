@@ -29,11 +29,11 @@ export default function RestaurantForm({
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
   const [formData, setFormData] = useState({
     name: initialData?.name || "",
-    description: initialData?.description || undefined,
+    description: initialData?.description || "",
     address: initialData?.address || "",
-    imageUrl: initialData?.imageUrl || undefined,
-    phone: initialData?.phone || undefined,
-    cuisine: initialData?.cuisine || undefined,
+    imageUrl: initialData?.imageUrl || "",
+    phone: initialData?.phone || "",
+    cuisine: initialData?.cuisine || "",
   });
 
   const handleSubmit = async (e: React.FormEvent) => {

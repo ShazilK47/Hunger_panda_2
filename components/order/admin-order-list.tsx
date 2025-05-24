@@ -264,13 +264,12 @@ export default function AdminOrderList() {
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
   };
-
   if (loading && orders.length === 0) {
     return (
-      <div className="flex items-center justify-center py-10">
+      <div className="flex items-center justify-center py-10 my-4 w-full bg-white rounded-lg shadow-sm">
         <div className="flex flex-col items-center space-y-4">
-          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
-          <p className="text-gray-500">Loading orders...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-orange-500"></div>
+          <p className="text-gray-500 font-medium">Loading orders...</p>
         </div>
       </div>
     );
@@ -278,32 +277,31 @@ export default function AdminOrderList() {
 
   if (error) {
     return (
-      <div className="bg-red-50 text-red-600 p-4 rounded-lg mb-6">
-        <p>{error}</p>
+      <div className="bg-red-50 text-red-600 p-4 sm:p-6 rounded-lg mb-6 shadow-sm">
+        <p className="font-medium">{error}</p>
         <Button
           onClick={() => loadOrders()}
           variant="outline"
           size="sm"
-          className="mt-2"
+          className="mt-3"
         >
           Try Again
         </Button>
       </div>
     );
   }
-
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 w-full">
       {/* Search and Filter */}
-      <div className="flex flex-col space-y-4 md:flex-row md:space-y-0 md:space-x-4">
+      <div className="flex flex-col space-y-4 sm:flex-row sm:flex-wrap sm:space-y-0 sm:space-x-2 lg:space-x-4">
         {/* Bulk Actions */}
         {selectedOrderIds.size > 0 && (
-          <div className="flex items-center space-x-4 p-4 bg-gray-50 rounded-lg">
-            <span className="text-sm text-gray-600">
+          <div className="flex flex-wrap items-center gap-2 p-3 sm:p-4 bg-gray-50 rounded-lg mb-3 sm:mb-0 w-full sm:w-auto">
+            <span className="text-sm text-gray-600 whitespace-nowrap">
               {selectedOrderIds.size} orders selected
             </span>
             <select
-              className="rounded-md border-gray-300 text-sm focus:ring-orange-500 focus:border-orange-500"
+              className="rounded-md border-gray-300 text-sm focus:ring-orange-500 focus:border-orange-500 w-full sm:w-auto"
               onChange={(e) =>
                 handleBulkUpdateStatus(e.target.value as OrderStatus)
               }
@@ -318,18 +316,23 @@ export default function AdminOrderList() {
                 </option>
               ))}
             </select>
-            <Button variant="outline" size="sm" onClick={handleExportOrders}>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleExportOrders}
+              className="w-full sm:w-auto"
+            >
               Export Selected
             </Button>
           </div>
         )}
 
         {/* Existing Search and Filter */}
-        <div className="relative flex-1">
+        <div className="relative flex-1 min-w-[180px]">
           <input
             type="text"
             placeholder="Search by order ID or item name..."
-            className="w-full px-4 py-3 pl-10 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-400"
+            className="w-full px-4 py-2 sm:py-3 pl-10 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-400"
             value={searchQuery}
             onChange={(e) => {
               setSearchQuery(e.target.value);
@@ -354,7 +357,7 @@ export default function AdminOrderList() {
 
         <div className="flex-shrink-0">
           <select
-            className="w-full md:w-auto px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-400"
+            className="w-full px-4 py-2 sm:py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-400"
             value={statusFilter}
             onChange={(e) => {
               setStatusFilter(e.target.value as OrderStatus | "all");
@@ -372,12 +375,13 @@ export default function AdminOrderList() {
       </div>
 
       {/* Orders Table */}
-      <div className="overflow-x-auto">
+      <div className="overflow-x-auto rounded-lg border border-gray-200 shadow-sm">
         <table className="min-w-full divide-y divide-gray-200">
           {" "}
           <thead className="bg-gray-50">
             <tr>
-              <th scope="col" className="px-6 py-3">
+              {" "}
+              <th scope="col" className="px-3 sm:px-6 py-3">
                 <input
                   type="checkbox"
                   className="rounded border-gray-300 text-orange-500 focus:ring-orange-500"
@@ -390,11 +394,12 @@ export default function AdminOrderList() {
               </th>
               <th
                 scope="col"
-                className="group px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
+                className="group px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
                 onClick={() => handleSort("id")}
               >
                 <div className="flex items-center space-x-1">
-                  <span>Order ID</span>
+                  <span>ID</span>
+                  <span className="hidden sm:inline">Order</span>
                   {sortField === "id" && (
                     <span className="text-gray-400">
                       {sortOrder === "asc" ? " ↑" : " ↓"}
@@ -404,13 +409,13 @@ export default function AdminOrderList() {
               </th>
               <th
                 scope="col"
-                className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
               >
-                Order Items
+                Items
               </th>
               <th
                 scope="col"
-                className="group px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
+                className="group px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
                 onClick={() => handleSort("total")}
               >
                 <div className="flex items-center space-x-1">
@@ -424,7 +429,7 @@ export default function AdminOrderList() {
               </th>
               <th
                 scope="col"
-                className="group px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
+                className="group px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
                 onClick={() => handleSort("status")}
               >
                 <div className="flex items-center space-x-1">
@@ -438,7 +443,7 @@ export default function AdminOrderList() {
               </th>
               <th
                 scope="col"
-                className="group px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
+                className="group px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
                 onClick={() => handleSort("createdAt")}
               >
                 <div className="flex items-center space-x-1">
@@ -452,11 +457,11 @@ export default function AdminOrderList() {
               </th>
               <th
                 scope="col"
-                className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
               >
                 Actions
               </th>
-            </tr>
+            </tr>{" "}
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
             {sortedOrders.length === 0 ? (
@@ -473,10 +478,12 @@ export default function AdminOrderList() {
                 <tr
                   key={order.id}
                   className={
-                    updatingOrderIds.has(order.id) ? "bg-gray-50" : undefined
+                    updatingOrderIds.has(order.id)
+                      ? "bg-gray-50 hover:bg-gray-100"
+                      : "hover:bg-gray-50"
                   }
                 >
-                  <td className="px-6 py-4 whitespace-nowrap">
+                  <td className="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap">
                     <input
                       type="checkbox"
                       className="rounded border-gray-300 text-orange-500 focus:ring-orange-500"
@@ -484,15 +491,20 @@ export default function AdminOrderList() {
                       onChange={() => handleSelectOrder(order.id)}
                     />
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-mono">
+                  <td className="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap text-sm font-mono max-w-[80px] sm:max-w-none truncate">
                     {order.id}
                   </td>
-                  <td className="px-6 py-4">
-                    <div className="text-sm text-gray-900 space-y-1">
+                  <td className="px-3 sm:px-6 py-3 sm:py-4">
+                    <div className="text-sm text-gray-900 space-y-1 max-w-[180px] lg:max-w-none">
                       {order.items.map((item) => (
-                        <div key={item.id} className="flex items-center gap-1">
+                        <div
+                          key={item.id}
+                          className="flex flex-wrap items-center gap-1"
+                        >
                           <span>{item.quantity}x</span>
-                          <span className="font-medium">{item.name}</span>
+                          <span className="font-medium truncate">
+                            {item.name}
+                          </span>
                           <span className="text-gray-500">
                             ({formatPrice(item.price)})
                           </span>
@@ -500,10 +512,10 @@ export default function AdminOrderList() {
                       ))}
                     </div>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-medium">
+                  <td className="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap text-sm text-gray-900 font-medium">
                     {formatPrice(order.total)}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
+                  <td className="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap">
                     <span
                       className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
                         STATUS_COLORS[order.status]
@@ -512,9 +524,14 @@ export default function AdminOrderList() {
                       {ORDER_STATUS_LABELS[order.status]}
                     </span>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  <td className="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap text-sm text-gray-500">
                     <div className="flex flex-col">
-                      <span>{format(new Date(order.createdAt), "PPp")}</span>
+                      <span className="hidden sm:block">
+                        {format(new Date(order.createdAt), "PPp")}
+                      </span>
+                      <span className="block sm:hidden">
+                        {format(new Date(order.createdAt), "PP")}
+                      </span>
                       <span className="text-xs text-gray-400">
                         {formatDistanceToNow(new Date(order.createdAt), {
                           addSuffix: true,
@@ -522,8 +539,8 @@ export default function AdminOrderList() {
                       </span>
                     </div>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm">
-                    <div className="flex items-center space-x-3">
+                  <td className="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap text-sm">
+                    <div className="flex items-center space-x-2 sm:space-x-3">
                       {order.status !== "DELIVERED" &&
                         order.status !== "CANCELLED" && (
                           <select
@@ -535,7 +552,7 @@ export default function AdminOrderList() {
                               )
                             }
                             disabled={updatingOrderIds.has(order.id)}
-                            className="rounded-md border-gray-300 text-sm focus:ring-orange-500 focus:border-orange-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                            className="w-24 sm:w-auto rounded-md border-gray-300 text-sm focus:ring-orange-500 focus:border-orange-500 disabled:opacity-50 disabled:cursor-not-allowed"
                           >
                             <option value={order.status}>
                               {ORDER_STATUS_LABELS[order.status]}
@@ -550,7 +567,11 @@ export default function AdminOrderList() {
                           </select>
                         )}
                       <Link href={`/orders/${order.id}`}>
-                        <Button variant="outline" size="sm">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="whitespace-nowrap"
+                        >
                           View
                         </Button>
                       </Link>

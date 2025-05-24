@@ -1,23 +1,11 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db/prisma";
 import { isAdmin } from "@/lib/auth/session";
 import { Order } from "@/lib/types/order";
 import { OrderStatus } from "@/lib/types/order-status";
-import {
-  Decimal,
-  PrismaClientKnownRequestError,
-} from "@prisma/client/runtime/library";
-
-type OrderItemResult = {
-  id: string;
-  menuItemId: string;
-  quantity: number;
-  price: Decimal;
-  menuItem: {
-    name: string;
-    price: Decimal;
-  };
-};
+import { convertPrismaOrder } from "@/lib/utils/prisma";
+import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 
 export async function PATCH(
   request: Request,
@@ -75,37 +63,39 @@ export async function PATCH(
         },
       });
 
-      return NextResponse.json({
+      // Convert decimal values to regular numbers
+      const converted = convertPrismaOrder(updatedOrder);
+      const response: Order = {
         id: updatedOrder.id,
         userId: updatedOrder.userId,
         status: updatedOrder.status as OrderStatus,
-        total: Number(updatedOrder.totalAmount),
-        items: updatedOrder.items.map((item: OrderItemResult) => ({
+        total: converted.totalAmount,
+        items: converted.items.map((item: any) => ({
           id: item.id,
           menuItemId: item.menuItemId,
           name: item.menuItem.name,
           quantity: item.quantity,
-          price: Number(item.price),
+          price: item.price,
         })),
         deliveryAddress: updatedOrder.deliveryAddress,
         paymentMethod: updatedOrder.paymentMethod,
         createdAt: updatedOrder.createdAt,
         updatedAt: updatedOrder.updatedAt,
-      } as Order);
+      };
+
+      return NextResponse.json(response);
     } catch (error) {
+      console.error("Error updating order:", error);
       if (error instanceof PrismaClientKnownRequestError) {
-        const prismaError = error as PrismaClientKnownRequestError;
-        if (prismaError.code === "P2025") {
-          return NextResponse.json(
-            { error: "Order not found" },
-            { status: 404 }
-          );
-        }
+        return NextResponse.json({ error: "Order not found" }, { status: 404 });
       }
-      throw error;
+      return NextResponse.json(
+        { error: "Failed to update order" },
+        { status: 500 }
+      );
     }
   } catch (error) {
-    console.error("[PATCH /api/orders/[id]]", error);
+    console.error("[PATCH /api/orders/:id]", error);
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 }

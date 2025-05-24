@@ -1,29 +1,11 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db/prisma";
 import { getCurrentUser, isAdmin } from "@/lib/auth/session";
 import { Order, CreateOrderInput } from "@/lib/types/order";
 import { OrderStatus } from "@/lib/types/order-status";
+import { convertPrismaDecimal, convertPrismaOrder } from "@/lib/utils/prisma";
 import { Decimal } from "@prisma/client/runtime/library";
-
-type OrderItemResult = {
-  id: string;
-  menuItemId: string;
-  orderId: string;
-  quantity: number;
-  price: Decimal;
-  menuItem: {
-    name: string;
-    price: Decimal;
-  };
-};
-
-// Helper to convert decimal values to numbers
-const convertDecimalToNumber = (decimal: Decimal | number): number => {
-  if (decimal instanceof Decimal) {
-    return decimal.toNumber();
-  }
-  return decimal as number;
-};
 
 export async function GET(request: Request) {
   try {
@@ -66,39 +48,28 @@ export async function GET(request: Request) {
         createdAt: "desc",
       },
     });
-    type DbOrder = {
-      id: string;
-      userId: string;
-      status: string;
-      totalAmount: Decimal;
-      deliveryAddress: string;
-      paymentMethod: string;
-      createdAt: Date;
-      updatedAt: Date;
-      items: OrderItemResult[];
-    };
 
-    // Convert orders to proper format
-    const formattedOrders = orders.map(
-      (order: DbOrder) =>
-        ({
-          id: order.id,
-          userId: order.userId,
-          status: order.status as OrderStatus,
-          total: convertDecimalToNumber(order.totalAmount),
-          items: order.items.map((item: OrderItemResult) => ({
-            id: item.id,
-            menuItemId: item.menuItemId,
-            name: item.menuItem.name,
-            quantity: item.quantity,
-            price: convertDecimalToNumber(item.price),
-          })),
-          deliveryAddress: order.deliveryAddress,
-          paymentMethod: order.paymentMethod,
-          createdAt: order.createdAt,
-          updatedAt: order.updatedAt,
-        } as Order)
-    );
+    // Convert orders to proper format using helper
+    const formattedOrders = orders.map((order: any) => {
+      const converted = convertPrismaOrder(order);
+      return {
+        id: order.id,
+        userId: order.userId,
+        status: order.status as OrderStatus,
+        total: converted.totalAmount,
+        items: converted.items.map((item: any) => ({
+          id: item.id,
+          menuItemId: item.menuItemId,
+          name: item.menuItem.name,
+          quantity: item.quantity,
+          price: item.price,
+        })),
+        deliveryAddress: order.deliveryAddress,
+        paymentMethod: order.paymentMethod,
+        createdAt: order.createdAt,
+        updatedAt: order.updatedAt,
+      } as Order;
+    });
 
     return NextResponse.json(formattedOrders);
   } catch (error) {
@@ -158,15 +129,28 @@ export async function POST(request: Request) {
         { error: "One or more menu items not found" },
         { status: 400 }
       );
-    } // Calculate total amount
+    }
+
+    interface MenuItem {
+      id: string;
+      price: number | Decimal;
+    }
+
+    // Calculate total amount using the helper
     const totalAmount = data.items.reduce((acc, item) => {
       const menuItem = menuItems.find(
-        (mi: { id: string; price: Decimal }) => mi.id === item.menuItemId
+        (mi: MenuItem) => mi.id === item.menuItemId
       );
       if (!menuItem) {
         throw new Error(`Menu item not found: ${item.menuItemId}`);
       }
-      return acc + convertDecimalToNumber(menuItem.price) * item.quantity;
+
+      const price = convertPrismaDecimal(menuItem.price);
+      if (price === null) {
+        throw new Error(`Price is null for menu item: ${menuItem.id}`);
+      }
+
+      return acc + price * item.quantity;
     }, 0);
 
     // Create the order
@@ -180,7 +164,7 @@ export async function POST(request: Request) {
         items: {
           create: data.items.map((item) => {
             const menuItem = menuItems.find(
-              (mi: { id: string; price: Decimal }) => mi.id === item.menuItemId
+              (mi: any) => mi.id === item.menuItemId
             );
             if (!menuItem) {
               throw new Error(`Menu item not found: ${item.menuItemId}`);
@@ -196,30 +180,38 @@ export async function POST(request: Request) {
       include: {
         items: {
           include: {
-            menuItem: true,
+            menuItem: {
+              select: {
+                name: true,
+                price: true,
+              },
+            },
           },
         },
       },
     });
 
-    // Convert order response to proper format
-    return NextResponse.json({
+    // Convert order response to proper format using helper
+    const converted = convertPrismaOrder(order);
+    const response: Order = {
       id: order.id,
       userId: order.userId,
       status: order.status as OrderStatus,
-      total: convertDecimalToNumber(order.totalAmount),
-      items: order.items.map((item: OrderItemResult) => ({
+      total: converted.totalAmount,
+      items: converted.items.map((item: any) => ({
         id: item.id,
         menuItemId: item.menuItemId,
         name: item.menuItem.name,
         quantity: item.quantity,
-        price: convertDecimalToNumber(item.price),
+        price: item.price,
       })),
       deliveryAddress: order.deliveryAddress,
       paymentMethod: order.paymentMethod,
       createdAt: order.createdAt,
       updatedAt: order.updatedAt,
-    } as Order);
+    };
+
+    return NextResponse.json(response);
   } catch (error) {
     console.error("[POST /api/orders]", error);
     if (error instanceof Error) {

@@ -46,9 +46,9 @@ model Restaurant {
 model MenuItem {
   id           String      @id @default(uuid())
   name         String
-  description  String?
+  description  String?     @db.Text
   price        Decimal     @db.Decimal(10, 2)
-  imageUrl     String?
+  imageUrl     String?     @db.Text
   category     String      // Appetizer, Main Course, Dessert, etc.
   restaurantId String
   restaurant   Restaurant  @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
@@ -83,7 +83,7 @@ model OrderItem {
   orderId    String
   order      Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
   menuItemId String
-  menuItem   MenuItem @relation(fields: [menuItemId], references: [id], onDelete: Restrict)
+  menuItem   MenuItem @relation(fields: [menuItemId], references: [id], onDelete: Cascade)
   quantity   Int
   price      Decimal  @db.Decimal(10, 2)
 
