@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Restaurant } from "@/lib/types/restaurant";
+import { getImageUrl, optimizeUnsplashUrl } from "@/lib/utils/image-utils";
 
 interface RestaurantCardProps {
   restaurant: Restaurant;
@@ -27,10 +28,11 @@ export function RestaurantCard({
   const { id, name, description, imageUrl, address, cuisine, phone } =
     restaurant;
 
-  // Default image if none provided
-  const displayImage =
-    imageUrl ||
-    "https://images.unsplash.com/photo-1552566626-52f8b828add9?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1770&q=80";
+  // Get optimized image URL with fallback
+  const displayImage = optimizeUnsplashUrl(
+    getImageUrl(imageUrl, "restaurantDefault"),
+    640
+  );
 
   return (
     <Card className="flex flex-col h-full overflow-hidden transition-all hover:shadow-hover group">

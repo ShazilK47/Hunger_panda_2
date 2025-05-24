@@ -7,6 +7,7 @@ import { deleteMenuItem, getMenuItems } from "@/lib/actions/menu-item";
 import { useEffect } from "react";
 import { formatCurrency } from "@/lib/utils/format";
 import Image from "next/image";
+import { getImageUrl, optimizeUnsplashUrl } from "@/lib/utils/image-utils";
 
 interface AdminMenuListProps {
   onEdit: (item: MenuItem) => void;
@@ -160,17 +161,22 @@ export default function AdminMenuList({ onEdit }: AdminMenuListProps) {
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex items-center">
                       {" "}
-                      {item.imageUrl && (
-                        <div className="flex-shrink-0 h-10 w-10 mr-4 relative">
-                          <Image
-                            className="rounded-full object-cover"
-                            src={item.imageUrl}
-                            alt={item.name}
-                            fill
-                            sizes="40px"
-                          />
-                        </div>
-                      )}
+                      <div className="flex-shrink-0 h-10 w-10 mr-4 relative">
+                        <Image
+                          className="rounded-full object-cover"
+                          src={optimizeUnsplashUrl(
+                            getImageUrl(item.imageUrl, "menuItemDefault"),
+                            100
+                          )}
+                          alt={item.name}
+                          fill
+                          sizes="40px"
+                          onError={(e) => {
+                            const target = e.target as HTMLImageElement;
+                            target.src = "/images/fallback-food-image.jpg";
+                          }}
+                        />
+                      </div>
                       <div className="ml-4">
                         <div className="text-sm font-medium text-gray-900">
                           {item.name}

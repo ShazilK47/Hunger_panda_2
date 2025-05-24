@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { formatCurrency } from "@/lib/utils/format";
+import { getImageUrl, optimizeUnsplashUrl } from "@/lib/utils/image-utils";
 
 interface MenuItemCardProps {
   menuItem: MenuItem;
@@ -27,10 +28,11 @@ export function MenuItemCard({
   const [quantity, setQuantity] = useState(1);
   const { name, description, price, imageUrl, category } = menuItem;
 
-  // Default image if none provided
-  const displayImage =
-    imageUrl ||
-    "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1760&q=80";
+  // Get optimized image URL with fallback
+  const displayImage = optimizeUnsplashUrl(
+    getImageUrl(imageUrl, "menuItemDefault"),
+    640
+  );
 
   const handleAddToCart = () => {
     if (onAddToCart) {
@@ -47,14 +49,22 @@ export function MenuItemCard({
           <span className="inline-block px-2 py-1 text-xs font-medium bg-orange-100 text-orange-800 rounded-full">
             {category}
           </span>
-        </div>
-        <div className="h-48 overflow-hidden relative">
+        </div>{" "}
+        <div className="h-48 overflow-hidden relative bg-gray-100">
           <Image
             src={displayImage}
             alt={name}
             fill
             className="object-cover transition-transform group-hover:scale-105 duration-500"
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            loading="lazy"
+            placeholder="blur"
+            blurDataURL="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjQwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iNDAwIiBoZWlnaHQ9IjQwMCIgZmlsbD0iI2YzZjRmNiIvPjwvc3ZnPg=="
+            data-fallback-type="menuItemDefault"
+            onError={(e) => {
+              const target = e.target as HTMLImageElement;
+              target.src = "/images/fallback-food-image.jpg";
+            }}
           />
         </div>
       </div>

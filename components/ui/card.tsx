@@ -1,6 +1,7 @@
 import { cn } from "@/lib/utils";
 import { ReactNode } from "react";
 import Image from "next/image";
+import { defaultImageProps, getImageUrl } from "@/lib/utils/image-utils";
 
 interface CardProps {
   className?: string;
@@ -97,13 +98,19 @@ export function CardImage({ src, alt, className }: CardImageProps) {
       )}
     >
       {/* Using next/image for better optimization */}
-      <div className="relative w-full h-full">
+      <div className="relative w-full h-full bg-gray-100">
         <Image
-          src={src}
+          src={getImageUrl(src, "restaurantDefault")}
           alt={alt}
           fill
           className="object-cover transition-transform hover:scale-105 duration-500"
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+          quality={75}
+          loading="lazy"
+          placeholder="blur"
+          blurDataURL={defaultImageProps.blurDataURL}
+          data-fallback-type="restaurantDefault"
+          onError={defaultImageProps.onError}
         />
       </div>
     </div>

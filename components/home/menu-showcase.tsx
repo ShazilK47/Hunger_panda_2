@@ -23,7 +23,7 @@ function CategoryFilter({
       onClick={onClick}
       className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
         isActive
-          ? "bg-primary text-white shadow-md"
+          ? "bg-primary text-black shadow-md"
           : "bg-gray-100 text-gray-700 hover:bg-gray-200"
       }`}
     >
@@ -396,7 +396,7 @@ export default function MenuShowcase() {
 
         {!loading && !error && (
           <div className="text-center mt-12">
-            <button className="px-6 py-3 bg-white border-2 border-primary text-primary rounded-full font-medium hover:bg-primary hover:text-white transition-colors">
+            <button className="px-6 py-3 bg-white border-2 border-primary text-primary rounded-full font-medium hover:bg-primary  transition-colors">
               View Full Menu
             </button>
           </div>

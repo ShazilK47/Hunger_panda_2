@@ -17,7 +17,7 @@ export default async function RestaurantsPage() {
             Browse Restaurants
           </h1>
           <p className="text-lg text-gray-600">
-            Find your favorite food from our partner restaurants
+            Find your favorite food from our partner restaurantss
           </p>
         </div>
 
