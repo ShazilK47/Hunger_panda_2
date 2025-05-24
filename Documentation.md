@@ -2,7 +2,7 @@
 
 ## Project Documentation
 
-**Author:** CodeRiders  
+**Author:** Shazil Khan
 **Date:** May 24, 2025  
 **Version:** 1.0.0
 
@@ -881,6 +881,5 @@ hunger_panda/
 **Course Information:**
 
 - Database Management Systems
-- [Course code]
-- [University/institution name]
-- [Semester/year]
+- Sindh Madressatul Islam University (SMIU)
+- 5th
