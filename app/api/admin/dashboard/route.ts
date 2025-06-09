@@ -26,15 +26,41 @@ export async function GET() {
                 email: true,
               },
             },
+            items: {
+              include: {
+                menuItem: {
+                  select: {
+                    name: true,
+                    price: true,
+                  },
+                },
+              },
+            },
           },
         }),
       ]);
+
+    // Calculate total amount for each order
+    const processedOrders = recentOrders.map((order) => {
+      const totalAmount = order.items.reduce(
+        (sum, item) => sum + Number(item.price) * item.quantity,
+        0
+      );
+
+      return {
+        id: order.id,
+        status: order.status,
+        totalAmount,
+        user: order.user,
+        createdAt: order.createdAt,
+      };
+    });
 
     return NextResponse.json({
       totalOrders,
       totalRestaurants,
       totalMenuItems,
-      recentOrders,
+      recentOrders: processedOrders,
     });
   } catch (error) {
     console.error("Error fetching dashboard stats:", error);
