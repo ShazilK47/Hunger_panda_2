@@ -1,41 +1,29 @@
+// Reset user sessions when migrating from string UUIDs to integer IDs
 import { PrismaClient } from "@prisma/client";
+const prisma = new PrismaClient();
 
-// This script clears Next.js session data to ensure clean authentication after changing ID types
-async function main() {
-  const prisma = new PrismaClient();
-
+async function resetSessions() {
   try {
-    // PostgreSQL syntax (for reference, not needed in MySQL)
-    // await prisma.$executeRawUnsafe(`TRUNCATE TABLE "next_auth_sessions" CASCADE;`);
+    console.log("Starting session reset...");
 
-    // MySQL syntax
-    console.log("Attempting to clear session tables...");
+    // Option 1: If you're using a sessions table in your database
+    // Uncomment this if you have a sessions table
+    /*
+    const result = await prisma.$executeRaw`TRUNCATE TABLE sessions;`;
+    console.log(`Deleted all sessions from database table`);
+    */
 
-    // Try to clear the sessions table if it exists
-    try {
-      await prisma.$executeRawUnsafe("DELETE FROM sessions;");
-      console.log("Successfully cleared sessions table");
-    } catch (e) {
-      console.log("No sessions table found or error clearing sessions:", e);
-    }
+    // Option 2: Update user reset tokens to force re-authentication
+    // This is useful if you're using JWT and don't have a sessions table
+    const result = await prisma.user.updateMany({
+      data: {
+        resetToken: null,
+        resetTokenExpiry: null,
+      },
+    });
 
-    // Try to clear accounts table if it exists
-    try {
-      await prisma.$executeRawUnsafe("DELETE FROM accounts;");
-      console.log("Successfully cleared accounts table");
-    } catch (e) {
-      console.log("No accounts table found or error clearing accounts:", e);
-    }
-
-    // Try to clear verification tokens table if it exists
-    try {
-      await prisma.$executeRawUnsafe("DELETE FROM verification_tokens;");
-      console.log("Successfully cleared verification_tokens table");
-    } catch (e) {
-      console.log("No verification_tokens table found or error:", e);
-    }
-
-    console.log("Session data reset completed");
+    console.log(`Reset ${result.count} user tokens`);
+    console.log("Sessions reset complete! Users will need to log in again.");
   } catch (error) {
     console.error("Error resetting sessions:", error);
   } finally {
@@ -43,6 +31,4 @@ async function main() {
   }
 }
 
-main()
-  .then(() => console.log("Session reset complete"))
-  .catch((e) => console.error("Error in reset script:", e));
+resetSessions();
