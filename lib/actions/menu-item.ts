@@ -171,6 +171,12 @@ export async function createMenuItem(
   try {
     validateMenuItemData(data);
 
+    // Ensure restaurantId is an integer
+    const restaurantId =
+      typeof data.restaurantId === "string"
+        ? parseInt(data.restaurantId, 10)
+        : data.restaurantId;
+
     const menuItem = await prisma.menuItem.create({
       data: {
         name: data.name.trim(),
@@ -178,7 +184,7 @@ export async function createMenuItem(
         price: data.price,
         category: data.category.trim(),
         imageUrl: data.imageUrl?.trim() || null,
-        restaurantId: data.restaurantId,
+        restaurantId: restaurantId,
       },
     });
 
@@ -285,7 +291,7 @@ export async function deleteMenuItem(id: string | number): Promise<void> {
 
     // Safe to delete since there are no references
     await prisma.menuItem.delete({
-      where: { id },
+      where: { id: menuItemId },
     });
 
     revalidatePath(`/restaurants/${menuItem.restaurantId}`);
@@ -317,10 +323,11 @@ export async function getMenuItemsByCategory(
   restaurantId?: string
 ): Promise<MenuItem[]> {
   try {
+    const restaurantIdNum = restaurantId ? parseInt(restaurantId) : undefined;
     const menuItems = await prisma.menuItem.findMany({
       where: {
         category,
-        ...(restaurantId && { restaurantId }),
+        ...(restaurantIdNum && { restaurantId: restaurantIdNum }),
       },
       orderBy: {
         name: "asc",

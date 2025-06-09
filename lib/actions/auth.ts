@@ -79,18 +79,24 @@ export async function register(data: RegisterData) {
     // Hash password
     const hashedPassword = await bcrypt.hash(data.password, 10);
 
-    // Create user
-    await prisma.user.create({
-      data: {
-        name: data.name,
-        email: data.email,
-        password: hashedPassword,
-      },
-    });
+    // Create user - with detailed error logging
+    try {
+      const newUser = await prisma.user.create({
+        data: {
+          name: data.name,
+          email: data.email,
+          password: hashedPassword,
+        },
+      });
 
-    return { success: true };
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      console.log("User created successfully:", newUser.id);
+      return { success: true };
+    } catch (createError) {
+      console.error("Error creating user:", createError);
+      return { error: "Error creating user account. Please try again." };
+    }
   } catch (error) {
+    console.error("Registration error:", error);
     return { error: "Something went wrong. Please try again." };
   }
 }

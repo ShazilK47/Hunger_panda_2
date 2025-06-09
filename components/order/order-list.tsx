@@ -33,7 +33,7 @@ export default function OrderList({ isAdmin = false, userId }: OrderListProps) {
   }, [userId]);
 
   const handleStatusUpdate = async (
-    orderId: string,
+    orderId: number,
     newStatus: OrderStatus
   ) => {
     // Optimistically update the UI

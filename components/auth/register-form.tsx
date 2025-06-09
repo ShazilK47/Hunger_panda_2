@@ -35,7 +35,14 @@ export default function RegisterForm() {
     }
 
     try {
+      console.log("Submitting registration form:", {
+        name: formData.name,
+        email: formData.email,
+        passwordLength: formData.password?.length,
+      });
+
       const response = await register(formData);
+      console.log("Registration response:", response);
 
       if (response.error) {
         setError(response.error);
@@ -45,8 +52,8 @@ export default function RegisterForm() {
 
       // Redirect to login on success
       router.push("/login?registered=true");
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
+      console.error("Registration error:", error);
       setError("An unexpected error occurred. Please try again.");
       setIsLoading(false);
     }

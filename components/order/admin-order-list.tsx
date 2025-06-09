@@ -51,10 +51,10 @@ export default function AdminOrderList({
   const [statusFilter, setStatusFilter] = useState<OrderStatus | "all">(
     initialFilter as OrderStatus | "all"
   );
-  const [selectedOrderIds, setSelectedOrderIds] = useState<Set<string>>(
+  const [selectedOrderIds, setSelectedOrderIds] = useState<Set<number>>(
     new Set()
   );
-  const [updatingOrderIds, setUpdatingOrderIds] = useState<Set<string>>(
+  const [updatingOrderIds, setUpdatingOrderIds] = useState<Set<number>>(
     new Set()
   );
   // Use default values initially
@@ -116,7 +116,7 @@ export default function AdminOrderList({
   }, []);
 
   const handleUpdateStatus = async (
-    orderId: string,
+    orderId: number,
     newStatus: OrderStatus
   ) => {
     // Validate status transition
@@ -203,12 +203,15 @@ export default function AdminOrderList({
       if (sortField === "total") {
         return sortOrder === "desc" ? b.total - a.total : a.total - b.total;
       }
-      if (sortField === "id" || sortField === "status") {
+      if (sortField === "status") {
         const aValue = a[sortField];
         const bValue = b[sortField];
         return sortOrder === "desc"
           ? bValue.localeCompare(aValue)
           : aValue.localeCompare(bValue);
+      }
+      if (sortField === "id") {
+        return sortOrder === "desc" ? b.id - a.id : a.id - b.id;
       }
       return 0;
     });
@@ -217,7 +220,7 @@ export default function AdminOrderList({
   const filteredOrders = orders.filter((order) => {
     const searchTerm = searchQuery.toLowerCase();
     const matchesSearch =
-      order.id.toLowerCase().includes(searchTerm) ||
+      order.id.toString().toLowerCase().includes(searchTerm) ||
       order.items.some((item) => item.name.toLowerCase().includes(searchTerm));
 
     const matchesStatus =
@@ -237,7 +240,7 @@ export default function AdminOrderList({
     }
   };
 
-  const handleSelectOrder = (orderId: string) => {
+  const handleSelectOrder = (orderId: number) => {
     setSelectedOrderIds((prev) => {
       const next = new Set(prev);
       if (next.has(orderId)) {

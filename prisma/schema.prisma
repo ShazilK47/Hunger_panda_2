@@ -7,7 +7,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// 🧑‍💻 Users - Can be normal users or admin (based on isAdmin flag)
 model User {
   id               Int       @id @default(autoincrement())
   name             String
@@ -18,81 +17,76 @@ model User {
   address          String?
   resetToken       String?
   resetTokenExpiry DateTime?
-  orders           Order[]
   createdAt        DateTime  @default(now())
   updatedAt        DateTime  @updatedAt
+  orders           Order[]
 
   @@map("users")
 }
 
-// 🏪 Restaurants - Admin can add/edit/delete
 model Restaurant {
   id          Int        @id @default(autoincrement())
   name        String     @db.VarChar(255)
   description String?    @db.Text
   imageUrl    String?    @db.Text
   address     String     @db.Text
-  phone       String?    @db.VarChar(20)
-  cuisine     String?    @db.VarChar(100)
-  menuItems   MenuItem[]
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
+  cuisine     String?    @db.VarChar(100)
+  phone       String?    @db.VarChar(20)
+  menuItems   MenuItem[]
 
   @@index([name])
   @@map("restaurants")
 }
 
-// 🍔 Menu Items - Belongs to a Restaurant
 model MenuItem {
   id           Int         @id @default(autoincrement())
   name         String
   description  String?     @db.Text
   price        Decimal     @db.Decimal(10, 2)
   imageUrl     String?     @db.Text
-  category     String      // Appetizer, Main Course, Dessert, etc.
+  category     String
   restaurantId Int
-  restaurant   Restaurant  @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
-  orderItems   OrderItem[]
   createdAt    DateTime    @default(now())
   updatedAt    DateTime    @updatedAt
+  restaurant   Restaurant  @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+  orderItems   OrderItem[]
 
   @@index([restaurantId])
   @@map("menu_items")
 }
 
-// 🧾 Orders - Placed by Users
 model Order {
   id              Int         @id @default(autoincrement())
   userId          Int
-  user            User        @relation(fields: [userId], references: [id], onDelete: Cascade)
-  items           OrderItem[]
   status          OrderStatus @default(PENDING)
   totalAmount     Decimal     @db.Decimal(10, 2)
   deliveryAddress String
-  paymentMethod   String      // Cash, Credit Card, etc.
+  paymentMethod   String
   createdAt       DateTime    @default(now())
   updatedAt       DateTime    @updatedAt
+  items           OrderItem[]
+  user            User        @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
   @@map("orders")
 }
 
-// 📦 Order Items - What food was in each order
 model OrderItem {
   id         Int      @id @default(autoincrement())
   orderId    Int
-  order      Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
   menuItemId Int
-  menuItem   MenuItem @relation(fields: [menuItemId], references: [id], onDelete: Cascade)
   quantity   Int
   price      Decimal  @db.Decimal(10, 2)
+  menuItem   MenuItem @relation(fields: [menuItemId], references: [id], onDelete: Cascade)
+  order      Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
 
   @@index([orderId])
   @@index([menuItemId])
   @@map("order_items")
 }
 
-// 🔁 Enum - Order status steps
 enum OrderStatus {
   PENDING
   CONFIRMED
