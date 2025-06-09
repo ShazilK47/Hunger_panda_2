@@ -118,10 +118,15 @@ export async function getRestaurants(
 /**
  * Get restaurant by ID
  */
-export async function getRestaurantById(id: string): Promise<Restaurant> {
+export async function getRestaurantById(
+  id: string | number
+): Promise<Restaurant> {
   try {
+    // Convert id to number if it's a string
+    const restaurantId = typeof id === "string" ? parseInt(id) : id;
+
     const restaurant = await prisma.restaurant.findUnique({
-      where: { id },
+      where: { id: restaurantId },
       include: {
         menuItems: true,
       },
@@ -183,7 +188,7 @@ export async function createRestaurant(
  * Update an existing restaurant (admin only)
  */
 export async function updateRestaurant(
-  id: string,
+  id: string | number,
   data: RestaurantFormData
 ): Promise<Restaurant> {
   try {
@@ -194,8 +199,11 @@ export async function updateRestaurant(
 
     validateRestaurantData(data);
 
+    // Convert id to number if it's a string
+    const restaurantId = typeof id === "string" ? parseInt(id) : id;
+
     const restaurant = await prisma.restaurant.update({
-      where: { id },
+      where: { id: restaurantId },
       data: {
         name: data.name,
         description: data.description || null,
@@ -207,7 +215,7 @@ export async function updateRestaurant(
     });
 
     revalidatePath("/restaurants");
-    revalidatePath(`/restaurants/${id}`);
+    revalidatePath(`/restaurants/${restaurantId}`);
     revalidatePath("/admin/restaurants");
 
     return restaurant;
@@ -223,15 +231,18 @@ export async function updateRestaurant(
 /**
  * Delete a restaurant (admin only)
  */
-export async function deleteRestaurant(id: string): Promise<void> {
+export async function deleteRestaurant(id: string | number): Promise<void> {
   try {
     const isAdminUser = await isAdmin();
     if (!isAdminUser) {
       throw new RestaurantError("Not authorized", "UNAUTHORIZED");
     }
 
+    // Convert id to number if it's a string
+    const restaurantId = typeof id === "string" ? parseInt(id) : id;
+
     await prisma.restaurant.delete({
-      where: { id },
+      where: { id: restaurantId },
     });
 
     revalidatePath("/restaurants");

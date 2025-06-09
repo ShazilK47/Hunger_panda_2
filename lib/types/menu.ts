@@ -1,12 +1,12 @@
 // Types related to menu items
 export interface MenuItem {
-  id: string;
+  id: number;
   name: string;
   description: string; // We convert null to empty string
   price: number;
   imageUrl: string; // We convert null to empty string
   category: string;
-  restaurantId: string;
+  restaurantId: number;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -17,5 +17,5 @@ export interface MenuItemFormData {
   price: number;
   category: string;
   imageUrl?: string;
-  restaurantId: string;
+  restaurantId: number | string; // Allow both for backward compatibility during transition
 }

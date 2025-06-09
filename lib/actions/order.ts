@@ -11,8 +11,8 @@ import { MenuItem } from "../types/menu";
 
 // Define a type for Prisma's order result
 export type PrismaOrderResult = {
-  id: string;
-  userId: string;
+  id: number;
+  userId: number;
   status: string;
   totalAmount: Decimal | number;
   deliveryAddress: string;
@@ -24,13 +24,13 @@ export type PrismaOrderResult = {
     email: string;
   };
   items: Array<{
-    id: string;
-    menuItemId: string;
-    orderId: string;
+    id: number;
+    menuItemId: number;
+    orderId: number;
     quantity: number;
     price: Decimal | number;
     menuItem: {
-      id: string;
+      id: number;
       name: string;
       price: Decimal | number;
     };
@@ -66,7 +66,7 @@ const convertPrismaOrderToOrderType = (order: PrismaOrderResult): Order => {
   };
 };
 
-export async function getOrders(userId?: string): Promise<Order[]> {
+export async function getOrders(userId?: string | number): Promise<Order[]> {
   const session = await getServerSession(authOptions);
 
   if (!session?.user?.email) {
@@ -82,8 +82,15 @@ export async function getOrders(userId?: string): Promise<Order[]> {
       throw new Error("User not found");
     }
 
+    // Convert userId to number if it's a string and exists
+    const userIdNumber = userId
+      ? typeof userId === "string"
+        ? parseInt(userId)
+        : userId
+      : undefined;
+
     const orders = await prisma.order.findMany({
-      where: userId ? { userId } : undefined,
+      where: userIdNumber ? { userId: userIdNumber } : undefined,
       include: {
         items: {
           include: {
@@ -160,7 +167,7 @@ export async function createOrder(input: CreateOrderInput): Promise<Order> {
       }
     );
     type OrderItemWithPrice = {
-      menuItemId: string;
+      menuItemId: number;
       quantity: number;
       price: Decimal | number;
     };
@@ -205,8 +212,8 @@ export async function createOrder(input: CreateOrderInput): Promise<Order> {
       total: convertDecimalToNumber(order.totalAmount),
       items: order.items.map(
         (item: {
-          id: string;
-          menuItemId: string;
+          id: number;
+          menuItemId: number;
           quantity: number;
           price: Decimal | number;
           menuItem: {
@@ -231,7 +238,9 @@ export async function createOrder(input: CreateOrderInput): Promise<Order> {
   }
 }
 
-export async function getOrderById(orderId: string): Promise<Order | null> {
+export async function getOrderById(
+  orderId: string | number
+): Promise<Order | null> {
   const session = await getServerSession(authOptions);
 
   if (!session?.user?.email) {
@@ -247,9 +256,13 @@ export async function getOrderById(orderId: string): Promise<Order | null> {
       throw new Error("User not found");
     }
 
+    // Convert orderId to number if it's a string
+    const orderIdNumber =
+      typeof orderId === "string" ? parseInt(orderId) : orderId;
+
     const order = await prisma.order.findUnique({
       where: {
-        id: orderId,
+        id: orderIdNumber,
         userId: user.id,
       },
       include: {
@@ -316,7 +329,7 @@ export async function getUserOrders(): Promise<Order[]> {
 }
 
 export async function updateOrderStatus(
-  orderId: string,
+  orderId: string | number,
   status: OrderStatus
 ): Promise<Order> {
   const session = await getServerSession(authOptions);
@@ -334,9 +347,13 @@ export async function updateOrderStatus(
       throw new Error("User not found");
     }
 
+    // Convert orderId to number if it's a string
+    const orderIdNumber =
+      typeof orderId === "string" ? parseInt(orderId) : orderId;
+
     const order = await prisma.order.update({
       where: {
-        id: orderId,
+        id: orderIdNumber,
       },
       data: {
         status,

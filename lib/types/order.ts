@@ -1,16 +1,16 @@
 import { OrderStatus } from "./order-status";
 
 export interface OrderItem {
-  id: string;
-  menuItemId: string;
+  id: number;
+  menuItemId: number;
   quantity: number;
   price: number;
   name: string;
 }
 
 export interface Order {
-  id: string;
-  userId: string;
+  id: number;
+  userId: number;
   status: OrderStatus;
   total: number;
   items: OrderItem[];
@@ -22,7 +22,7 @@ export interface Order {
 
 export interface CreateOrderInput {
   items: Array<{
-    menuItemId: string;
+    menuItemId: number;
     quantity: number;
   }>;
   deliveryAddress: string;
@@ -31,7 +31,7 @@ export interface CreateOrderInput {
 
 export interface CreateOrderInput {
   items: {
-    menuItemId: string;
+    menuItemId: number;
     quantity: number;
   }[];
   total: number;

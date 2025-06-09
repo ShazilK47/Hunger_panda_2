@@ -9,7 +9,7 @@ datasource db {
 
 // 🧑‍💻 Users - Can be normal users or admin (based on isAdmin flag)
 model User {
-  id               String    @id @default(uuid())
+  id               Int       @id @default(autoincrement())
   name             String
   email            String    @unique
   password         String
@@ -27,7 +27,7 @@ model User {
 
 // 🏪 Restaurants - Admin can add/edit/delete
 model Restaurant {
-  id          String     @id @default(uuid())
+  id          Int        @id @default(autoincrement())
   name        String     @db.VarChar(255)
   description String?    @db.Text
   imageUrl    String?    @db.Text
@@ -44,13 +44,13 @@ model Restaurant {
 
 // 🍔 Menu Items - Belongs to a Restaurant
 model MenuItem {
-  id           String      @id @default(uuid())
+  id           Int         @id @default(autoincrement())
   name         String
   description  String?     @db.Text
   price        Decimal     @db.Decimal(10, 2)
   imageUrl     String?     @db.Text
   category     String      // Appetizer, Main Course, Dessert, etc.
-  restaurantId String
+  restaurantId Int
   restaurant   Restaurant  @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
   orderItems   OrderItem[]
   createdAt    DateTime    @default(now())
@@ -62,8 +62,8 @@ model MenuItem {
 
 // 🧾 Orders - Placed by Users
 model Order {
-  id              String      @id @default(uuid())
-  userId          String
+  id              Int         @id @default(autoincrement())
+  userId          Int
   user            User        @relation(fields: [userId], references: [id], onDelete: Cascade)
   items           OrderItem[]
   status          OrderStatus @default(PENDING)
@@ -79,10 +79,10 @@ model Order {
 
 // 📦 Order Items - What food was in each order
 model OrderItem {
-  id         String   @id @default(uuid())
-  orderId    String
+  id         Int      @id @default(autoincrement())
+  orderId    Int
   order      Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
-  menuItemId String
+  menuItemId Int
   menuItem   MenuItem @relation(fields: [menuItemId], references: [id], onDelete: Cascade)
   quantity   Int
   price      Decimal  @db.Decimal(10, 2)

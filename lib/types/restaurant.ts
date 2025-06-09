@@ -2,7 +2,7 @@
 import { MenuItem } from "./menu";
 
 export interface Restaurant {
-  id: string;
+  id: number;
   name: string;
   description: string | null;
   imageUrl: string | null;
@@ -15,7 +15,7 @@ export interface Restaurant {
 }
 
 export interface RestaurantFormData {
-  id?: string;
+  id?: number;
   name: string;
   description?: string | null;
   address: string;

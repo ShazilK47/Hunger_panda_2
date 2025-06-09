@@ -54,7 +54,7 @@ export const menuItemSchema = z.object({
     .url("Please enter a valid image URL")
     .optional()
     .or(z.literal("")),
-  restaurantId: z.string().uuid("Invalid restaurant ID"),
+  restaurantId: z.number().int().positive("Invalid restaurant ID"),
 });
 
 // Checkout validation schema

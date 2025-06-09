@@ -123,10 +123,15 @@ export async function getMenuItemsByRestaurant(
 /**
  * Get menu item by ID
  */
-export async function getMenuItemById(id: string): Promise<MenuItem | null> {
+export async function getMenuItemById(
+  id: string | number
+): Promise<MenuItem | null> {
   try {
+    // Convert id to number if it's a string
+    const menuItemId = typeof id === "string" ? parseInt(id) : id;
+
     const menuItem = await prisma.menuItem.findUnique({
-      where: { id },
+      where: { id: menuItemId },
     });
     return menuItem ? convertPrismaMenuItemToMenuItem(menuItem) : null;
   } catch (error) {
@@ -178,21 +183,29 @@ export async function createMenuItem(
  * Update an existing menu item (admin only)
  */
 export async function updateMenuItem(
-  id: string,
+  id: string | number,
   data: MenuItemFormData
 ): Promise<MenuItem> {
   try {
     validateMenuItemData(data);
 
+    // Convert id to number if it's a string
+    const menuItemId = typeof id === "string" ? parseInt(id) : id;
+    // Convert restaurantId to number if it's a string
+    const restaurantId =
+      typeof data.restaurantId === "string"
+        ? parseInt(data.restaurantId)
+        : data.restaurantId;
+
     const menuItem = await prisma.menuItem.update({
-      where: { id },
+      where: { id: menuItemId },
       data: {
         name: data.name.trim(),
         description: data.description?.trim() || null,
         price: data.price,
         category: data.category.trim(),
         imageUrl: data.imageUrl?.trim() || null,
-        restaurantId: data.restaurantId,
+        restaurantId: restaurantId,
       },
     });
 
@@ -221,11 +234,14 @@ export async function updateMenuItem(
 /**
  * Delete a menu item (admin only)
  */
-export async function deleteMenuItem(id: string): Promise<void> {
+export async function deleteMenuItem(id: string | number): Promise<void> {
   try {
+    // Convert id to number if it's a string
+    const menuItemId = typeof id === "string" ? parseInt(id) : id;
+
     // First, check if the menu item exists
     const menuItem = await prisma.menuItem.findUnique({
-      where: { id },
+      where: { id: menuItemId },
       include: {
         orderItems: {
           take: 1, // We only need to know if there are any, not all of them

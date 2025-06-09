@@ -2,7 +2,7 @@ import "next-auth";
 
 declare module "next-auth" {
   interface User {
-    id: string;
+    id: number;
     name: string;
     email: string;
     isAdmin: boolean;
@@ -15,7 +15,7 @@ declare module "next-auth" {
 
 declare module "next-auth/jwt" {
   interface JWT {
-    id: string;
+    id: number;
     isAdmin: boolean;
   }
 }
