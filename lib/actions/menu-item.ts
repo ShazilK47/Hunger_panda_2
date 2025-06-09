@@ -99,12 +99,34 @@ export async function getMenuItems(): Promise<MenuItem[]> {
  * Get menu items by restaurant ID
  */
 export async function getMenuItemsByRestaurant(
-  restaurantId: string
+  restaurantId: string | number
 ): Promise<MenuItem[]> {
   try {
+    // Safety check for null or undefined
+    if (restaurantId === null || restaurantId === undefined) {
+      throw new Error("Restaurant ID is required");
+    }
+
+    // Convert restaurantId to number if it's a string
+    let restaurantIdNum: number;
+
+    if (typeof restaurantId === "string") {
+      // Handle potential non-numeric strings
+      if (!/^\d+$/.test(restaurantId)) {
+        throw new Error(`Invalid restaurant ID format: ${restaurantId}`);
+      }
+      restaurantIdNum = parseInt(restaurantId, 10);
+    } else {
+      restaurantIdNum = restaurantId;
+    }
+
+    console.log(
+      `Fetching menu items for restaurant ID: ${restaurantIdNum} (type: ${typeof restaurantIdNum})`
+    );
+
     const menuItems = await prisma.menuItem.findMany({
       where: {
-        restaurantId,
+        restaurantId: restaurantIdNum,
       },
       orderBy: {
         category: "asc",

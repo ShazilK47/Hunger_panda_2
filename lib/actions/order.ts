@@ -141,26 +141,41 @@ export async function createOrder(input: CreateOrderInput): Promise<Order> {
     if (!user) {
       throw new Error("User not found");
     } // Calculate total amount
+    // Convert all menuItemIds to integers before querying
+    const menuItemIds = input.items.map(
+      (item: CreateOrderInput["items"][0]) => {
+        return typeof item.menuItemId === "string"
+          ? parseInt(item.menuItemId)
+          : item.menuItemId;
+      }
+    );
+
+    console.log("Menu item IDs for order:", menuItemIds);
+
     const menuItems = await prisma.menuItem.findMany({
       where: {
         id: {
-          in: input.items.map(
-            (item: CreateOrderInput["items"][0]) => item.menuItemId
-          ),
+          in: menuItemIds,
         },
       },
     });
 
     const itemsWithPrices = input.items.map(
       (item: CreateOrderInput["items"][0]) => {
+        // Ensure menuItemId is a number for comparison
+        const menuItemIdNum =
+          typeof item.menuItemId === "string"
+            ? parseInt(item.menuItemId)
+            : item.menuItemId;
+
         const menuItem = menuItems.find(
-          (mi: MenuItem) => mi.id === item.menuItemId
+          (mi: MenuItem) => mi.id === menuItemIdNum
         );
         if (!menuItem) {
           throw new Error(`Menu item not found: ${item.menuItemId}`);
         }
         return {
-          menuItemId: item.menuItemId,
+          menuItemId: menuItemIdNum, // Use the parsed number version
           quantity: item.quantity,
           price: menuItem.price,
         };

@@ -191,8 +191,11 @@ export function CartProvider({ children }: CartProviderProps) {
   };
 
   // Check if menu item is in cart
-  const isInCart = (menuItemId: string) => {
-    return cart.items.some((item) => item.menuItem.id === menuItemId);
+  const isInCart = (menuItemId: number | string) => {
+    // Ensure we're comparing the same types
+    const menuItemIdNum =
+      typeof menuItemId === "string" ? parseInt(menuItemId) : menuItemId;
+    return cart.items.some((item) => item.menuItem.id === menuItemIdNum);
   };
 
   const value: CartContextType = {

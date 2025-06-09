@@ -32,7 +32,7 @@ export default function SearchBar() {
     }
   };
 
-  const handleResultClick = (restaurantId: string) => {
+  const handleResultClick = (restaurantId: string | number) => {
     // Clear search
     setSearchTerm("");
     setResults([]);

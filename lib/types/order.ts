@@ -22,17 +22,10 @@ export interface Order {
 
 export interface CreateOrderInput {
   items: Array<{
-    menuItemId: number;
+    menuItemId: number | string; // Accept both types for backward compatibility
     quantity: number;
   }>;
   deliveryAddress: string;
   paymentMethod: string;
-}
-
-export interface CreateOrderInput {
-  items: {
-    menuItemId: number;
-    quantity: number;
-  }[];
-  total: number;
+  total?: number; // Optional total field
 }

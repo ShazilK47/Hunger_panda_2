@@ -56,7 +56,9 @@ export const authOptions: NextAuthOptions = {
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
-        token.id = user.id;
+        // Ensure ID is stored as a number in the token
+        token.id =
+          typeof user.id === "string" ? parseInt(user.id, 10) : user.id;
         token.name = user.name;
         token.email = user.email;
         token.isAdmin = user.isAdmin;
@@ -65,7 +67,11 @@ export const authOptions: NextAuthOptions = {
     },
     async session({ session, token }) {
       if (token) {
-        session.user.id = token.id as string;
+        // Ensure the ID is passed as a number to the session
+        session.user.id =
+          typeof token.id === "string"
+            ? parseInt(token.id, 10)
+            : (token.id as number);
         session.user.name = token.name as string;
         session.user.email = token.email as string;
         session.user.isAdmin = token.isAdmin as boolean;
